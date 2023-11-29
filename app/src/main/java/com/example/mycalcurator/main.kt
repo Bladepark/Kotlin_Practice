@@ -2,7 +2,7 @@ package com.example.mycalcurator
 
 import java.lang.NumberFormatException
 
-//Lv3 : AddOperation(더하기), SubstractOperation(빼기), MultiplyOperation(곱하기), DivideOperation(나누기) 연산 클래스를을 만든 후 클래스간의 관계를 고려하여 Calculator 클래스와 관계를 맺기
+//Lv3 : AddOperation(더하기), SubstractOperation(빼기), MultiplyOperation(곱하기), DivideOperation(나누기) 연산 클래스를 만든 후 클래스간의 관계를 고려하여 Calculator 클래스와 관계를 맺기
 // 입력값 안정성 높이기 -> 완료
 
 fun main() {
@@ -19,7 +19,8 @@ fun main() {
     op = isValidOperator()
     println("--------연산할 두 번째 숫자를 입력하세요--------")
     num2 = isNumber()
-    var cal = Calculator()
+
+    val cal = Calculator()
     var result = cal.calculator(num1, num2, op)
     println("-----------연산 결과 : ${result} -----------")
 
