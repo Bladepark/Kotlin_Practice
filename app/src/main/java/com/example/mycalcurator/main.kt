@@ -17,12 +17,11 @@ fun main() {
         var keepOrExit = readLine()!!.toInt()
         if (keepOrExit == 2) {println("--------계산기 종료--------"); break}
         println("--------연산할 숫자를 입력하세요--------")
-        var num2 = readLine()!!.toDouble()
+        num2 = readLine()!!.toDouble()
         println("-------연산자에 해당하는 숫자를 입력하세요-------")
         println("-----1(더하기) 2(빼기) 3(곱하기) 4(나누기)-----")
-        var op = readLine()!!.toInt()
-        var result = cal.calculator(result, num2, op)
+        op = readLine()!!.toInt()
+        result = cal.calculator(result, num2, op)
         println("--------------연산 결과 : ${result} --------------")
     }while(true)
 }
-
