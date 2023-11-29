@@ -8,7 +8,6 @@ class Calculator {
             2 -> {result = num1 - num2}
             3 -> {result = num1 * num2}
             4 -> {result = num1 / num2}
-            else -> {result = -1.0}
         }
         return result
     }
