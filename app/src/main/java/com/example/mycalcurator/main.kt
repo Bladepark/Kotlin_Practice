@@ -2,13 +2,15 @@ package com.example.mycalcurator
 
 import java.lang.NumberFormatException
 
-//Lv3 : AddOperation(더하기), SubstractOperation(빼기), MultiplyOperation(곱하기), DivideOperation(나누기) 연산 클래스를 만든 후 클래스간의 관계를 고려하여 Calculator 클래스와 관계를 맺기
-// 입력값 안정성 높이기 -> 완료
+//- Lv4 : AddOperation(더하기), SubtractOperation(빼기), MultiplyOperation(곱하기), DivideOperation(나누기) 연산 클래스들을
+// AbstractOperation라는 클래스명으로 만들어 사용하여 추상화하고 Calculator 클래스의 내부 코드를 변경합니다.
+//- Lv3 와 비교해서 어떠한 점이 개선 되었는지 스스로 생각해 봅니다.
+//        - hint. 클래스간의 결합도, 의존성(의존성역전원칙)
 
 fun main() {
     var num1: Double
     var num2: Double
-    var op: Int
+    var op: AbstractOperation
     var keepOrExit: Int
 
     println("-------------------계산기-------------------")
@@ -60,11 +62,18 @@ fun isNumber() : Double{
     }
 }
 
-fun isValidOperator() : Int {
+fun isValidOperator() : AbstractOperation {
     while (true) {
         try {
             var op = readLine()!!.toInt()
-            if (op in 1..4) return op
+            if (op in 1..4) {
+                when(op) {
+                    1 -> return AddOperation()
+                    2 -> return SubstractOperation()
+                    3 -> return MultiflyOperation()
+                    4 -> return DivideOperation()
+                }
+            }
             else println("1부터 4까지 연산자에 해당하는 숫자를 입력하세요")
         } catch (e: NumberFormatException) {
             println("입력값 오류! 숫자를 입력해주세요.")
