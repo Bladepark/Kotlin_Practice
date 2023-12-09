@@ -13,32 +13,33 @@ import java.time.format.DateTimeFormatter
 
 
 class ReserveRoom {
-    lateinit var userName :String
-    var roomNumber :Int = 0
-    var checkInDate : Int = 0
-    var checkOutDate : Int= 0
-
-
-    fun reserveRoom() {
+    fun reserveRoom(){
         println("예약자분의 성함을 입력해주세요")
-        userName = isValidUserName()
+        var name = isValidName()
         println("예약할 방 번호를 입력해주세요")
-        roomNumber = getRoomNumber()
+        var roomNumber = getRoomNumber()
         println("체크인 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
-        checkInDate = getCheckInDate()
+        var checkInDateInt = getCheckInDate()
         println("체크아웃 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
-        checkOutDate = getCheckOutDate(checkInDate)
+        var checkOutDateInt = getCheckOutDate(checkInDateInt)
+        val randomMoney = (10000..50000).random()
+        val reservationFee = (10000..25000).random()
+        var checkInDate = LocalDate.parse(checkInDateInt.toString(), DateTimeFormatter.BASIC_ISO_DATE)
+        checkInDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        var checkOutDate = LocalDate.parse(checkOutDateInt.toString(), DateTimeFormatter.BASIC_ISO_DATE)
+        checkOutDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val reservationList = ReservationListData(name,roomNumber,checkInDate,checkOutDate,randomMoney, reservationFee)
+        ReservationList.reservationList.add(reservationList)
         println("호텔 예약이 완료되었습니다.")
-        return
     }
 }
 
-fun isValidUserName() :String{
+fun isValidName() :String{
     while (true) {
         try {
-            var userName = readLine()!!
-            checkUserName(userName)
-            return userName
+            var name = readln()
+            if (name.matches(Regex(".*\\d+.*"))) throw InvalidUserNameException("이름에 숫자가 포함되어 있습니다. 숫자를 빼고 다시 입력해주세요.")
+            return name
         } catch (e: InvalidUserNameException) {
             println(e.message)
         } catch (e: Exception) {
@@ -47,15 +48,10 @@ fun isValidUserName() :String{
     }
 }
 
-fun checkUserName(name:String) :String{
-    if (name.matches(Regex(".*\\d+.*"))) throw InvalidUserNameException("이름에 숫자가 포함되어 있습니다. 숫자를 빼고 다시 입력해주세요.")
-    else return name
-}
-
 fun getRoomNumber() : Int {
     while (true) {
         try {
-            var roomNumber = readLine()!!.toInt()
+            var roomNumber = readln().toInt()
             if (roomNumber<100||roomNumber>999) println("올바르지 않은 방 번호입니다. 방번호는 100~999 영역 이내입니다.")
             else return roomNumber
         } catch (e: Exception) {
@@ -67,12 +63,13 @@ fun getRoomNumber() : Int {
 fun getCheckInDate() : Int{
     val localDate = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-    var currentDate = localDate.format(formatter).toInt()
+    val currentDate = localDate.format(formatter).toInt()
 
     while (true) {
         try {
-            var checkInDate = readLine()!!.toInt()
-            if (checkInDate < currentDate) println("체크인은 지난 날을 선택할 수 없습니다.\n체크인 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
+            val checkInDate = readln().toInt()
+            if(checkInDate>20250101) println("체크인은 2025년 1월 1일 이후의 날을 선택할 수 없습니다.\n체크인 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
+            else if (checkInDate < currentDate) println("체크인은 지난 날을 선택할 수 없습니다.\n체크인 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
             else return checkInDate
         } catch (e: Exception) {
             println("입력 오류! 표기형식을 확인해주세요.")
@@ -83,8 +80,9 @@ fun getCheckInDate() : Int{
 fun getCheckOutDate(checkInDate:Int) : Int{
     while (true) {
         try {
-            var checkOutDate = readLine()!!.toInt()
-            if (checkOutDate <= checkInDate) println("체크아웃 날짜는 체크인 날짜보다 이전이거나 같을 수 없습니다.\n체크아웃 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
+            var checkOutDate = readln().toInt()
+            if(checkOutDate>99999999) println("잘못된 범위의 날짜를 선택할 수 없습니다.\n체크아웃 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
+            else if (checkOutDate <= checkInDate) println("체크아웃 날짜는 체크인 날짜보다 이전이거나 같을 수 없습니다.\n체크아웃 날짜를 입력해주세요. 표기형식  -> YYYYMMDD 예시 -> 20231201")
             else return checkOutDate
         } catch (e: Exception) {
             println("입력 오류! 표기형식을 확인해주세요.")
