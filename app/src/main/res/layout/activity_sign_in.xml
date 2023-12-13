@@ -7,15 +7,14 @@
     tools:context=".SignInActivity">
 
     <ImageView
-        android:id="@+id/img_logo"
+        android:id="@+id/img_signIn"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/bbangbbang1" />
-
+        app:srcCompat="@drawable/bbangbbang1"/>
     <TextView
         android:id="@+id/textView"
         style="@style/TextDefault"
@@ -25,7 +24,7 @@
         android:layout_marginTop="50dp"
         android:text="@string/tv_idTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/img_signIn" />
 
     <TextView
         android:id="@+id/textView2"

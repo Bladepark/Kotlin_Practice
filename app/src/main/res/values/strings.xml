@@ -6,6 +6,16 @@
     <string name="tv_pwdHint">비밀번호를 입력하세요.</string>
     <string name="btn_signInTitle">로그인</string>
     <string name="btn_signUpTitle">회원가입</string>
+    <string name="btn_signUpNext">다음</string>
     <string name="tv_nameTitle">이름</string>
     <string name="tv_nameHint">이름을 입력하세요.</string>
+    <string name="tv_homeAgeTitle">나이</string>
+    <string name="tv_homeAge">나이를 입력하세요.</string>
+    <string name="tv_homeMBTITitle">MBTI</string>
+    <string name="tv_homeMBTI">MBTI를 입력하세요.</string>
+    <string name="btn_addInfo">작성 완료</string>
+    <string name="tv_homeAd">광고</string>
+    <string name="btn_homefinish">종료</string>
+    <string name="tv_homeBlog">https://happenedtodeveloper.tistory.com/</string>
+    <string name="tv_homeGithub">https://github.com/Bladepark</string>
 </resources>
