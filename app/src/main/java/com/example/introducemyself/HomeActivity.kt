@@ -17,7 +17,6 @@ class HomeActivity : AppCompatActivity() {
         val homeImgView = findViewById<ImageView>(R.id.img_home)
         val idTextView = findViewById<TextView>(R.id.tv_homeId)
         val nameTextView = findViewById<TextView>(R.id.tv_homeName)
-        val ageTextView = findViewById<TextView>(R.id.tv_homeAge)
         val mbtiTextView = findViewById<TextView>(R.id.tv_homeMbti)
         val homeExitBtn = findViewById<Button>(R.id.btn_homeExit)
 
@@ -34,11 +33,8 @@ class HomeActivity : AppCompatActivity() {
         homeImgView.setImageResource(imgResources[random])
         idTextView.setText("아이디 :" + memberInfo?.id)
         nameTextView.setText("이름 :" + memberInfo?.name)
-        ageTextView.setText("나이 :" + memberInfo?.age)
         mbtiTextView.setText("MBTI :" + memberInfo?.mbti)
-        MemberInfo.memberInfo.forEach {
-            println("$it")
-        }
+
         homeExitBtn.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
             intent.putExtra("memberId", id)
