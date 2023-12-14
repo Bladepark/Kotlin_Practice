@@ -3,6 +3,9 @@ package com.example.introducemyself
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -20,6 +23,9 @@ class HomeActivity : AppCompatActivity() {
         val ageTextView = findViewById<TextView>(R.id.tv_homeAge)
         val mbtiTextView = findViewById<TextView>(R.id.tv_homeMbti)
         val homeExitBtn = findViewById<Button>(R.id.btn_homeExit)
+        val webView = findViewById<WebView>(R.id.webView)
+        val blogTextView = findViewById<TextView>(R.id.tv_homeBlog)
+        val githubTextView = findViewById<TextView>(R.id.tv_homeGithub)
 
         val id = intent.getStringExtra("memberId")
         val pwd = intent.getStringExtra("memberPwd")
@@ -31,14 +37,30 @@ class HomeActivity : AppCompatActivity() {
 
         val random = Random.nextInt(imgResources.size)
 
+        // WebView 설정
+        val webSettings: WebSettings = webView.settings
+        webSettings.javaScriptEnabled = true // JavaScript 활성화
+        // WebViewClient를 설정하여 새 창이 아니라 현재 WebView에서 링크가 열리도록 함
+        webView.webViewClient = WebViewClient()
+
         homeImgView.setImageResource(imgResources[random])
-        idTextView.setText("아이디 :" + memberInfo?.id)
+        idTextView.setText("아이디 :" + id)
         nameTextView.setText("이름 :" + memberInfo?.name)
         ageTextView.setText("나이 :" + memberInfo?.age)
         mbtiTextView.setText("MBTI :" + memberInfo?.mbti)
-        MemberInfo.memberInfo.forEach {
-            println("$it")
+
+        blogTextView.setOnClickListener {
+            val url = "https://happenedtodeveloper.tistory.com/" // 원하는 링크 주소로 변경
+            webView.visibility = WebView.VISIBLE
+            webView.loadUrl(url)
         }
+
+        githubTextView.setOnClickListener {
+            val url = "https://github.com/Bladepark" // 원하는 링크 주소로 변경
+            webView.visibility = WebView.VISIBLE
+            webView.loadUrl(url)
+        }
+
         homeExitBtn.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
             intent.putExtra("memberId", id)

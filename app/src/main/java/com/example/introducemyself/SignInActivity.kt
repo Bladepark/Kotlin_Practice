@@ -3,12 +3,15 @@ package com.example.introducemyself
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.addTextChangedListener
 
 class SignInActivity : AppCompatActivity() {
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -32,22 +35,44 @@ class SignInActivity : AppCompatActivity() {
                 pwdEditText.setText(pwd)
             }
         }
+        signInBtn.isEnabled = false
+        idEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                signInBtn.isEnabled = idEditText.text.isNotEmpty() && pwdEditText.text.isNotEmpty()
+            }
+        })
+        pwdEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                signInBtn.isEnabled = idEditText.text.isNotEmpty() && pwdEditText.text.isNotEmpty()
+            }
+        })
 
         signInBtn.setOnClickListener {
             val inputId = idEditText.text.toString()
             val inputPwd = pwdEditText.text.toString()
-            if(idEditText.text.isEmpty()||pwdEditText.text.isEmpty()){
+            if (idEditText.text.isEmpty() || pwdEditText.text.isEmpty()) {
                 Toast.makeText( this,"아이디와 비밀번호 모두 입력해주세요.", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                val memberExist = MemberInfo.memberInfo.any { it.id == inputId && it.pwd == inputPwd}
+            } else {
+                val memberExist = MemberInfo.memberInfo.any { it.id == inputId && it.pwd == inputPwd }
                 if(memberExist){
                     Toast.makeText( this,"로그인 성공!", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, HomeActivity::class.java)
                     intent.putExtra("memberId", inputId)
                     intent.putExtra("memberPwd", inputPwd)
                     resultLauncher.launch(intent)
-                }else{
+                } else {
                     Toast.makeText( this,"아이디 또는 비밀번호가 일치하지 않습니다. 회원이 아니시라면 회원가입을 먼저 해주세요.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -55,7 +80,7 @@ class SignInActivity : AppCompatActivity() {
 
         signUpBtn.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
+            resultLauncher.launch(intent)
         }
     }
 }
