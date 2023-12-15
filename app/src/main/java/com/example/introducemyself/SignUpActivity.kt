@@ -6,8 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.widget.Adapter
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import com.google.android.material.internal.TextWatcherAdapter
 
@@ -23,6 +29,8 @@ class SignUpActivity : AppCompatActivity() {
         val pwdEditText = findViewById<EditText>(R.id.pwdTextInputEditText)
         val pwdCheckEditText = findViewById<EditText>(R.id.pwdCheckTextInputEditText)
         val signUpBtn = findViewById<Button>(R.id.btn_signUp)
+        val spinner = findViewById<Spinner>(R.id.spinner)
+        var inputId = idEditText.text.toString()
 
         var nameFlag = false
         var ageFlag = false
@@ -31,6 +39,28 @@ class SignUpActivity : AppCompatActivity() {
         var pwdFlag = false
         var pwdCheckFlag = false
 
+
+        var spinnerEmailProvider = resources.getStringArray(R.array.emailProvider)
+        var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, spinnerEmailProvider)
+        spinner.adapter = adapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
+                    0,1 -> inputId = idEditText.text.toString()
+                    2,3,4 -> inputId = idEditText.text.toString() + spinnerEmailProvider[spinner.selectedItemPosition]
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+
         nameEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
         object : TextWatcherAdapter() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -38,6 +68,7 @@ class SignUpActivity : AppCompatActivity() {
                 signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
             }
         })
+
         ageEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
         object : TextWatcherAdapter() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -45,6 +76,7 @@ class SignUpActivity : AppCompatActivity() {
                 signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
             }
         })
+
         mbtiEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
         object : TextWatcherAdapter() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -52,24 +84,25 @@ class SignUpActivity : AppCompatActivity() {
                 signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
             }
         })
+
         idEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
         object : TextWatcherAdapter() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                idFlag = isValidId()
+                idFlag = isValidId(spinnerEmailProvider[spinner.selectedItemPosition])
+                Log.d("spinnerSelection", spinnerEmailProvider[spinner.selectedItemPosition])
+                Log.d("idEditText", idEditText.text.toString())
                 signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
             }
         })
+
         pwdEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
         object : TextWatcherAdapter() {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                pwdEditText.hint = "8자리 이상, 영문, 숫자, 특수문자 포함"
-            }
-
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 pwdFlag = isValidPwd()
                 signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
             }
         })
+
         pwdCheckEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
         object : TextWatcherAdapter() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -79,9 +112,7 @@ class SignUpActivity : AppCompatActivity() {
         })
 
         signUpBtn.setOnClickListener {
-            val inputId = idEditText.text.toString()
             val inputPwd = pwdEditText.text.toString()
-
             val newMember = MemberData(
                 id = inputId,
                 pwd = inputPwd,
@@ -118,26 +149,26 @@ class SignUpActivity : AppCompatActivity() {
 
     fun isValidAge(): Boolean {
         val ageEditText = findViewById<EditText>(R.id.ageTextInputEditText)
-        val age = ageEditText.text.toString().trim()
-        val ageInt = if (age.isNotEmpty()) age.toInt() else -1
-        val agePattern = Regex("^[0-9]*\$")
-        return when {
-            age.isEmpty() -> {
-                ageEditText.error = "나이를 입력해주세요."
-                false
+        val age = ageEditText.text.toString()
+        try {
+            val ageInt = if (age.isNotEmpty()) Integer.parseInt(age) else -1
+            return when {
+                age.isEmpty() -> {
+                    ageEditText.error = "나이를 입력해주세요."
+                    false
+                }
+                ageInt in 15..100 -> {
+                    ageEditText.error = null
+                    true
+                }
+                else -> {
+                    ageEditText.error = "만 14세 이상이어야 하며 100세 이하로 입력가능합니다."
+                    false
+                }
             }
-            !age.matches(agePattern) -> {
-                ageEditText.error = "숫자만 입력해주세요."
-                false
-            }
-            ageInt in 15..100 -> {
-                ageEditText.error = null
-                true
-            }
-            else -> {
-                ageEditText.error = "만 14세 이상이어야 하며 100세 이하로 입력가능합니다."
-                false
-            }
+        } catch (e: NumberFormatException) {
+            ageEditText.error = "숫자만 입력해주세요."
+            return false
         }
     }
 
@@ -158,9 +189,13 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    fun isValidId() : Boolean {
+    fun isValidId(emailProvider : String) : Boolean {
         val idEditText = findViewById<EditText>(R.id.idTextInputEditText)
-        val id = idEditText.text.toString()
+        val id = when(emailProvider) {
+            "선택하세요.", "직접 입력" -> idEditText.text.toString()
+            else -> idEditText.text.toString() + emailProvider
+        }
+        //val id = idEditText.text.toString()
         val idPattern = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$")
         return if (idEditText.text.isEmpty()) {
             idEditText.error = "이메일을 입력해주세요."
