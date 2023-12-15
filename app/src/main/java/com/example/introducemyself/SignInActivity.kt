@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 
 class SignInActivity : AppCompatActivity() {
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -36,28 +37,12 @@ class SignInActivity : AppCompatActivity() {
             }
         }
         signInBtn.isEnabled = false
-        idEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                signInBtn.isEnabled = idEditText.text.isNotEmpty() && pwdEditText.text.isNotEmpty()
-            }
-        })
-        pwdEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                signInBtn.isEnabled = idEditText.text.isNotEmpty() && pwdEditText.text.isNotEmpty()
-            }
-        })
+        idEditText.doAfterTextChanged {
+            signInBtn.isEnabled = idEditText.text.isNotEmpty() && pwdEditText.text.isNotEmpty()
+        }
+        pwdEditText.doAfterTextChanged {
+            signInBtn.isEnabled = idEditText.text.isNotEmpty() && pwdEditText.text.isNotEmpty()
+        }
 
         signInBtn.setOnClickListener {
             val inputId = idEditText.text.toString()

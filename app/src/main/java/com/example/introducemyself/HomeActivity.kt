@@ -37,9 +37,9 @@ class HomeActivity : AppCompatActivity() {
 
         val random = Random.nextInt(imgResources.size)
 
-        // WebView 설정
+        // WebView 설정 및 JavaScript 활성화
         val webSettings: WebSettings = webView.settings
-        webSettings.javaScriptEnabled = true // JavaScript 활성화
+        webSettings.javaScriptEnabled = true
         // WebViewClient를 설정하여 새 창이 아니라 현재 WebView에서 링크가 열리도록 함
         webView.webViewClient = WebViewClient()
 
