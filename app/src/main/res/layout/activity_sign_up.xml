@@ -6,129 +6,182 @@
     android:layout_height="match_parent"
     tools:context=".SignUpActivity">
 
-    <EditText
-        android:id="@+id/et_mbti"
-        style="@style/TextDefault"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:ems="10"
-        android:hint="@string/tv_homeMBTI"
-        android:inputType="text"
+        android:layout_marginEnd="16dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
 
-    <TextView
-        android:id="@+id/textView6"
-        style="@style/TextDefault"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/tv_homeMBTITitle"
-        app:layout_constraintStart_toStartOf="@+id/et_name"
-        app:layout_constraintTop_toBottomOf="@+id/et_name" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nameTextInputEditText"
+            style="@style/TextDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/textView3"
         style="@style/TextDefault"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/tv_nameTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/et_name"
-        style="@style/TextDefault"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:ems="10"
-        android:hint="@string/tv_nameHint"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-    <EditText
-        android:id="@+id/et_signUpID"
-        style="@style/TextDefault"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:ems="10"
-        android:hint="@string/tv_idHint"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-
-    <TextView
-        android:id="@+id/textView"
-        style="@style/TextDefault"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/tv_idTitle"
-        app:layout_constraintStart_toStartOf="@+id/et_mbti"
-        app:layout_constraintTop_toBottomOf="@+id/et_mbti" />
-
-    <TextView
-        android:id="@+id/textView2"
-        style="@style/TextDefault"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/tv_pwdTitle"
-        app:layout_constraintStart_toStartOf="@+id/et_signUpID"
-        app:layout_constraintTop_toBottomOf="@+id/et_signUpID" />
-
-    <EditText
-        android:id="@+id/et_signUpPwd"
-        android:layout_width="0dp"
-        style="@style/TextDefault"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:ems="10"
-        android:hint="@string/tv_pwdHint"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/textView4"
         style="@style/TextDefault"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/tv_pwdCheckTitle"
-        app:layout_constraintStart_toStartOf="@+id/et_signUpPwd"
-        app:layout_constraintTop_toBottomOf="@+id/et_signUpPwd" />
+        android:layout_marginTop="8dp"
+        android:text="@string/tv_homeAgeTitle"
+        app:layout_constraintStart_toStartOf="@+id/nameTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextInputLayout" />
 
-    <EditText
-        android:id="@+id/et_signUpPwdCheck"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ageTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ageTextInputEditText"
+            style="@style/TextDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView5"
+        style="@style/TextDefault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/tv_homeMBTITitle"
+        app:layout_constraintStart_toStartOf="@+id/ageTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/ageTextInputLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/mbtiTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/mbtiTextInputEditText"
+            style="@style/TextDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView6"
+        style="@style/TextDefault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/tv_idTitle"
+        app:layout_constraintStart_toStartOf="@+id/mbtiTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/mbtiTextInputLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/idTextInputLayout"
         style="@style/TextDefault"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:ems="10"
-        android:hint="@string/tv_pwdHint"
-        android:inputType="textPassword"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/idTextInputEditText"
+            style="@style/TextDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView7"
+        style="@style/TextDefault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/tv_pwdTitle"
+        app:layout_constraintStart_toStartOf="@+id/idTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/idTextInputLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pwdTextInputLayout"
+        style="@style/TextDefault"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/textView7">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/pwdTextInputEditText"
+            style="@style/TextDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView8"
+        style="@style/TextDefault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/tv_pwdCheckTitle"
+        app:layout_constraintStart_toStartOf="@+id/pwdTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/pwdTextInputLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pwdCheckTextInputLayout"
+        style="@style/TextDefault"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/pwdCheckTextInputEditText"
+            style="@style/TextDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/btn_signUp"
@@ -136,11 +189,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:text="@string/btn_signUpNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_signUpPwdCheck" />
+        app:layout_constraintTop_toBottomOf="@+id/pwdCheckTextInputLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>
