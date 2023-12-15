@@ -149,6 +149,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/pwdTextInputEditText"
             style="@style/TextDefault"
+            android:hint="@string/tv_pwdCheckHint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"/>

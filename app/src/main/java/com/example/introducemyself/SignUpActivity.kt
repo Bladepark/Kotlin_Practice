@@ -38,7 +38,7 @@ class SignUpActivity : AppCompatActivity() {
         var idFlag = false
         var pwdFlag = false
         var pwdCheckFlag = false
-
+        signUpBtn.isEnabled = false
 
         var spinnerEmailProvider = resources.getStringArray(R.array.emailProvider)
         var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, spinnerEmailProvider)
@@ -89,8 +89,8 @@ class SignUpActivity : AppCompatActivity() {
         object : TextWatcherAdapter() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 idFlag = isValidId(spinnerEmailProvider[spinner.selectedItemPosition])
-                Log.d("spinnerSelection", spinnerEmailProvider[spinner.selectedItemPosition])
-                Log.d("idEditText", idEditText.text.toString())
+//                Log.d("spinnerSelection", spinnerEmailProvider[spinner.selectedItemPosition])
+//                Log.d("idEditText", idEditText.text.toString())
                 signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
             }
         })
@@ -113,21 +113,27 @@ class SignUpActivity : AppCompatActivity() {
 
         signUpBtn.setOnClickListener {
             val inputPwd = pwdEditText.text.toString()
-            val newMember = MemberData(
-                id = inputId,
-                pwd = inputPwd,
-                name = nameEditText.text.toString(),
-                age = ageEditText.text.toString(),
-                mbti = mbtiEditText.text.toString()
-            )
+            Log.d("inputId", inputId)
+            if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
+                idEditText.error = "이메일 형식이 맞지 않습니다. 이메일 형식을 우선적으로 설정한 후 다시 입력해주세요."
+            } else {
+                idEditText.error = null
+                val newMember = MemberData(
+                    id = inputId,
+                    pwd = inputPwd,
+                    name = nameEditText.text.toString(),
+                    age = ageEditText.text.toString(),
+                    mbti = mbtiEditText.text.toString()
+                )
 
-            MemberInfo.memberInfo.add(newMember)
-            Toast.makeText(this, "가입 완료! 로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, SignInActivity::class.java)
-            intent.putExtra("memberId", inputId)
-            intent.putExtra("memberPwd", inputPwd)
-            setResult(RESULT_OK, intent)
-            finish()
+                MemberInfo.memberInfo.add(newMember)
+                Toast.makeText(this, "가입 완료! 로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, SignInActivity::class.java)
+                intent.putExtra("memberId", inputId)
+                intent.putExtra("memberPwd", inputPwd)
+                setResult(RESULT_OK, intent)
+                finish()
+            }
         }
     }
 
@@ -172,7 +178,6 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-
     fun isValidMbti() : Boolean {
         val mbtiEditText = findViewById<EditText>(R.id.mbtiTextInputEditText)
         val mbti = mbtiEditText.text.toString()
@@ -195,7 +200,6 @@ class SignUpActivity : AppCompatActivity() {
             "선택하세요.", "직접 입력" -> idEditText.text.toString()
             else -> idEditText.text.toString() + emailProvider
         }
-        //val id = idEditText.text.toString()
         val idPattern = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$")
         return if (idEditText.text.isEmpty()) {
             idEditText.error = "이메일을 입력해주세요."
