@@ -5,13 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 
 class SignInActivity : AppCompatActivity() {
@@ -43,6 +42,7 @@ class SignInActivity : AppCompatActivity() {
         pwdEditText.doAfterTextChanged {
             signInBtn.isEnabled = idEditText.text.isNotEmpty() && pwdEditText.text.isNotEmpty()
         }
+
 
         signInBtn.setOnClickListener {
             val inputId = idEditText.text.toString()

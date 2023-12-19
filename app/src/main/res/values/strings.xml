@@ -2,10 +2,14 @@
     <string name="app_name">IntroduceMyself</string>
     <string name="tv_idTitle">이메일</string>
     <string name="tv_pwdTitle">비밀번호</string>
+    <string name="sign_up_name_error_blank">이름을 입력하세요.</string>
+    <string name="sign_up_name_error_pattern">이름에 숫자 또는 특수 문자가 들어갈 수 없습니다.</string>
     <string name="tv_pwdCheckTitle">비밀번호 확인</string>
     <string name="tv_idHint">이메일을 입력하세요.</string>
     <string name="tv_pwdHint">비밀번호를 입력하세요.</string>
     <string name="tv_pwdCheckHint">8자리이상, 영문, 숫자, 특수문자 포함</string>
+    <string name="sign_up_pwd_error_pattern">영문, 숫자, 특수문자를 모두 포함하여 주세요.</string>
+    <string name="sign_up_pwd_check_error">비밀번호가 다릅니다.</string>
     <string name="btn_signInTitle">로그인</string>
     <string name="btn_signUpTitle">회원가입</string>
     <string name="btn_signUpNext">회원가입 완료</string>
@@ -13,10 +17,21 @@
     <string name="tv_nameHint">이름을 입력하세요.</string>
     <string name="tv_homeAgeTitle">나이</string>
     <string name="tv_homeAge">나이를 입력하세요.</string>
+    <string name="sign_up_age_error_limit">만 14세 이상이어야 하며 100세 이하로 입력가능합니다.</string>
     <string name="tv_homeMBTITitle">MBTI</string>
     <string name="tv_homeMBTI">MBTI를 입력하세요.</string>
+    <string name="sign_up_mbti_error_pattern">MBTI 형식 예시 [E/I] [N/S] [F/T] [J/] 중 조합 -> ENFJ</string>
     <string name="tv_homeAd">광고</string>
     <string name="btn_homefinish">종료</string>
     <string name="tv_homeBlog">어쩌다 개발자의 블로그</string>
     <string name="tv_homeGithub">BladePark\'s Github</string>
+    <string name="sign_up_email_provider_select_menu">선택하세요.</string>
+    <string name="sign_up_email_provider_direct">직접 입력</string>
+    <string name="sign_up_email_provider_gmail">\@gmail.com</string>
+    <string name="sign_up_email_provider_naver">\@naver.com</string>
+    <string name="sign_up_email_provider_kakao">\@kakao.com</string>
+    <string name="sign_up_email_provider_error">이메일 형식을 선택해주세요.</string>
+    <string name="sign_up_id_error_pattern">이메일 형식으로 입력해주세요 -> example@example.com</string>
+    <string name="sign_up_id_error_pattern2">특수문자를 포함할 수 없습니다.</string>
+    <string name="sign_up_email_error_pattern">이메일 형식으로 입력해주세요 -> @example.com</string>
 </resources>

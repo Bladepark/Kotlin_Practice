@@ -1,121 +1,77 @@
 package com.example.introducemyself
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
-import com.google.android.material.internal.TextWatcherAdapter
+import androidx.core.widget.addTextChangedListener
 
 class SignUpActivity : AppCompatActivity() {
+
+    private val nameEditText by lazy { findViewById<EditText>(R.id.nameTextInputEditText) }
+    private val ageEditText by lazy { findViewById<EditText>(R.id.ageTextInputEditText) }
+    private val mbtiEditText by lazy { findViewById<EditText>(R.id.mbtiTextInputEditText) }
+    private val idEditText by lazy { findViewById<EditText>(R.id.idTextInputEditText) }
+    private val pwdEditText by lazy { findViewById<EditText>(R.id.pwdTextInputEditText) }
+    private val pwdCheckEditText by lazy { findViewById<EditText>(R.id.pwdCheckTextInputEditText) }
+    private val emailEditText by lazy { findViewById<EditText>(R.id.emailTextInputEditText) }
+    private val emailTextInputLayout by lazy { findViewById<View>(R.id.emailTextInputLayout) }
+    private val signUpBtn by lazy { findViewById<Button>(R.id.btn_signUp) }
+    private val spinner by lazy { findViewById<Spinner>(R.id.spinner) }
+
+    private val editTexts
+        get() = listOf(
+            nameEditText,
+            ageEditText,
+            mbtiEditText,
+            idEditText,
+            emailEditText,
+            pwdEditText,
+            pwdCheckEditText
+        )
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        val nameEditText = findViewById<EditText>(R.id.nameTextInputEditText)
-        val ageEditText = findViewById<EditText>(R.id.ageTextInputEditText)
-        val mbtiEditText = findViewById<EditText>(R.id.mbtiTextInputEditText)
-        val idEditText = findViewById<EditText>(R.id.idTextInputEditText)
-        val pwdEditText = findViewById<EditText>(R.id.pwdTextInputEditText)
-        val pwdCheckEditText = findViewById<EditText>(R.id.pwdCheckTextInputEditText)
-        val signUpBtn = findViewById<Button>(R.id.btn_signUp)
-        val spinner = findViewById<Spinner>(R.id.spinner)
-        var inputId = idEditText.text.toString()
+        initView()
+    }
 
-        var nameFlag = false
-        var ageFlag = false
-        var mbtiFlag = false
-        var idFlag = false
-        var pwdFlag = false
-        var pwdCheckFlag = false
-        signUpBtn.isEnabled = false
+    private fun initView() {
+        setServiceProvider()
 
-        var spinnerEmailProvider = resources.getStringArray(R.array.emailProvider)
-        var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, spinnerEmailProvider)
-        spinner.adapter = adapter
+        setTextChangedListener()
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                when (position) {
-                    0,1 -> inputId = idEditText.text.toString()
-                    2,3,4 -> inputId = idEditText.text.toString() + spinnerEmailProvider[spinner.selectedItemPosition]
-                }
-            }
+        setSignUpButton()
+    }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+    private fun setTextChangedListener() {
+        editTexts.forEach { editText ->
+            editText.addTextChangedListener {
+                editText.setErrorMessage()
+                setSignUpButtonEnabled()
             }
         }
+    }
 
-        nameEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
-        object : TextWatcherAdapter() {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                nameFlag = isValidName()
-                signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
-            }
-        })
-
-        ageEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
-        object : TextWatcherAdapter() {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                ageFlag = isValidAge()
-                signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
-            }
-        })
-
-        mbtiEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
-        object : TextWatcherAdapter() {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                mbtiFlag = isValidMbti()
-                signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
-            }
-        })
-
-        idEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
-        object : TextWatcherAdapter() {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                idFlag = isValidId(spinnerEmailProvider[spinner.selectedItemPosition])
-//                Log.d("spinnerSelection", spinnerEmailProvider[spinner.selectedItemPosition])
-//                Log.d("idEditText", idEditText.text.toString())
-                signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
-            }
-        })
-
-        pwdEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
-        object : TextWatcherAdapter() {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                pwdFlag = isValidPwd()
-                signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
-            }
-        })
-
-        pwdCheckEditText.addTextChangedListener(@SuppressLint("RestrictedApi")
-        object : TextWatcherAdapter() {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                pwdCheckFlag = isValidPwdCheck(pwdEditText.text.toString())
-                signUpBtn.isEnabled = (nameFlag && ageFlag && mbtiFlag && idFlag && pwdFlag && pwdCheckFlag)
-            }
-        })
-
+    private fun setSignUpButton() {
         signUpBtn.setOnClickListener {
+            val inputId = when (spinner.selectedItemPosition) {
+                1 -> idEditText.text.toString() + emailEditText.text.toString()
+                2,3,4 -> idEditText.text.toString() + spinner.selectedItem.toString()
+                else -> idEditText.text.toString()
+            }
             val inputPwd = pwdEditText.text.toString()
-            Log.d("inputId", inputId)
             if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
-                idEditText.error = "이메일 형식이 맞지 않습니다. 이메일 형식을 우선적으로 설정한 후 다시 입력해주세요."
+                Toast.makeText(this, getString(R.string.sign_up_id_error_pattern), Toast.LENGTH_SHORT).show()
             } else {
                 idEditText.error = null
                 val newMember = MemberData(
@@ -137,106 +93,146 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    fun isValidName() : Boolean {
-        val nameEditText = findViewById<EditText>(R.id.nameTextInputEditText)
-        val name = nameEditText.text.toString()
-        val namePattern = Regex("^[a-zA-Z가-힣]*\$")
-        return if (nameEditText.text.isEmpty()) {
-            nameEditText.error = "이름을 입력해주세요."
-            false
-        } else if (!name.matches(namePattern)){
-            nameEditText.error = "이름에 숫자 또는 특수 문자가 들어갈 수 없습니다."
-            false
-        } else {
-            nameEditText.error = null
-            true
-        }
-    }
-
-    fun isValidAge(): Boolean {
-        val ageEditText = findViewById<EditText>(R.id.ageTextInputEditText)
-        val age = ageEditText.text.toString()
-        try {
-            val ageInt = if (age.isNotEmpty()) Integer.parseInt(age) else -1
-            return when {
-                age.isEmpty() -> {
-                    ageEditText.error = "나이를 입력해주세요."
-                    false
-                }
-                ageInt in 15..100 -> {
-                    ageEditText.error = null
-                    true
-                }
-                else -> {
-                    ageEditText.error = "만 14세 이상이어야 하며 100세 이하로 입력가능합니다."
-                    false
+    private fun setServiceProvider() {
+        spinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            listOf(
+                getString(R.string.sign_up_email_provider_select_menu),
+                getString(R.string.sign_up_email_provider_direct),
+                getString(R.string.sign_up_email_provider_gmail),
+                getString(R.string.sign_up_email_provider_naver),
+                getString(R.string.sign_up_email_provider_kakao)
+            )
+        )
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                when (position) {
+                    0 -> signUpBtn.isEnabled = false
+                    1 -> {
+                        spinner.visibility = View.GONE
+                        emailTextInputLayout.visibility = View.VISIBLE
+                    }
+                    else -> signUpBtn.isEnabled = true
                 }
             }
-        } catch (e: NumberFormatException) {
-            ageEditText.error = "숫자만 입력해주세요."
-            return false
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
     }
 
-    fun isValidMbti() : Boolean {
-        val mbtiEditText = findViewById<EditText>(R.id.mbtiTextInputEditText)
+    private fun EditText.setErrorMessage() {
+        when (this) {
+            nameEditText -> nameEditText.error = isValidName()
+            ageEditText -> ageEditText.error = isValidAge()
+            mbtiEditText -> mbtiEditText.error = isValidMbti()
+            idEditText -> idEditText.error = isValidId()
+            pwdEditText -> pwdEditText.error = isValidPwd()
+            pwdCheckEditText -> pwdCheckEditText.error = isValidPwdCheck()
+            emailEditText -> emailEditText.error = isValidEmail()
+        }
+    }
+
+    private fun setSignUpButtonEnabled() {
+        signUpBtn.isEnabled = when (spinner.selectedItemPosition) {
+            0 -> false
+            1 -> {
+                isValidName()?.isBlank() ?: true
+                        && isValidAge()?.isBlank() ?: true
+                        && isValidMbti()?.isBlank() ?: true
+                        && isValidId()?.isBlank() ?: true
+                        && isValidPwd()?.isBlank() ?: true
+                        && isValidPwdCheck()?.isBlank() ?: true
+                        && isValidEmail()?.isBlank() ?: true
+            }
+            2,3,4 -> {
+                isValidName()?.isBlank() ?: true
+                        && isValidAge()?.isBlank() ?: true
+                        && isValidMbti()?.isBlank() ?: true
+                        && isValidId()?.isBlank() ?: true
+                        && isValidPwd()?.isBlank() ?: true
+                        && isValidPwdCheck()?.isBlank() ?: true
+            }
+            else -> false
+        }
+    }
+
+    private fun isValidName() : String? {
+        val namePattern = Regex("^[a-zA-Z가-힣]*\$")
+        return when {
+            nameEditText.text.isBlank() -> getString(R.string.sign_up_name_error_blank)
+            !nameEditText.text.toString().matches(namePattern) -> getString(R.string.sign_up_name_error_pattern)
+            else -> null
+        }
+    }
+
+    private fun isValidAge(): String? {
+        val age = ageEditText.text.toString()
+        return when {
+            age.isBlank() -> getString(R.string.tv_homeAge)
+            age.toInt() < 15 || age.toInt() > 100 -> getString(R.string.sign_up_age_error_limit)
+            else -> null
+        }
+    }
+
+    private fun isValidMbti() : String? {
         val mbti = mbtiEditText.text.toString()
         val mbtiPattern = Regex("[EI][NS][FT][JP]")
-        return if (mbtiEditText.text.isEmpty()) {
-            mbtiEditText.error = "MBTI를 입력해주세요."
-            false
-        } else if (!mbti.matches(mbtiPattern)){
-            mbtiEditText.error = "MBTI 형식 예시 [E/I] [N/S] [F/T] [J/] 중 조합 -> ENFJ"
-            false
-        } else {
-            mbtiEditText.error = null
-            true
+        return when {
+            mbti.isBlank() -> getString(R.string.tv_homeMBTI)
+            !mbti.matches(mbtiPattern) -> getString(R.string.sign_up_mbti_error_pattern)
+            else -> null
         }
     }
 
-    fun isValidId(emailProvider : String) : Boolean {
-        val idEditText = findViewById<EditText>(R.id.idTextInputEditText)
-        val id = when(emailProvider) {
-            "선택하세요.", "직접 입력" -> idEditText.text.toString()
-            else -> idEditText.text.toString() + emailProvider
-        }
-        val idPattern = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$")
-        return if (idEditText.text.isEmpty()) {
-            idEditText.error = "이메일을 입력해주세요."
-            false
-        } else if (!id.matches(idPattern)){
-            idEditText.error = "이메일 형식으로 입력해주세요 -> example@example.com"
-            false
-        } else {
-            idEditText.error = null
-            true
+    private fun isValidId() : String? {
+        val id = idEditText.text.toString()
+        val idPattern = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\$")
+
+        return when {
+            id.isBlank() -> getString(R.string.tv_idHint)
+            !id.matches(idPattern) -> getString(R.string.sign_up_id_error_pattern2)
+            else -> null
         }
     }
-    fun isValidPwd() : Boolean {
-        val pwdEditText = findViewById<EditText>(R.id.pwdTextInputEditText)
+
+    private fun isValidEmail() : String? {
+        val email = when(spinner.selectedItemPosition) {
+            0 -> ""
+            1 -> emailEditText.text.toString()
+            2 -> getString(R.string.sign_up_email_provider_gmail)
+            3 -> getString(R.string.sign_up_email_provider_naver)
+            4 -> getString(R.string.sign_up_email_provider_kakao)
+            else -> ""
+        }
+        val emailPattern = Regex("^@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$")
+
+        return when {
+            email.isBlank() -> getString(R.string.tv_idHint)
+            !email.matches(emailPattern) -> getString(R.string.sign_up_email_error_pattern)
+            else -> null
+        }
+    }
+
+    private fun isValidPwd() : String? {
         val pwd = pwdEditText.text.toString()
         val pwdPattern = Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\$@\$!%*#?&.])[A-Za-z[0-9]\$@\$!%*#?&.]{8,16}\$")
-        return if (pwdEditText.text.isEmpty()) {
-            pwdEditText.error = "비밀번호를 입력해주세요."
-            false
-        } else if (!pwd.matches(pwdPattern)){
-            pwdEditText.error = "영문, 숫자, 특수문자를 모두 포함하여 주세요."
-            false
-        } else {
-            pwdEditText.error = null
-            true
+        return when {
+            pwd.isBlank() -> getString(R.string.tv_pwdHint)
+            !pwd.matches(pwdPattern) -> getString(R.string.sign_up_pwd_error_pattern)
+            else -> null
         }
     }
-    fun isValidPwdCheck(pwd : String) : Boolean {
-        val pwdCheckEditText = findViewById<EditText>(R.id.pwdCheckTextInputEditText)
+    private fun isValidPwdCheck() : String? {
         val pwdCheck = pwdCheckEditText.text.toString()
-        val pwdCheckPattern = Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\$@\$!%*#?&.])[A-Za-z[0-9]\$@\$!%*#?&.]{8,16}\$")
-        return if (pwdCheck == pwd) {
-            pwdCheckEditText.error = null
-            true
+        return if (pwdCheck != pwdEditText.text.toString()) {
+            getString(R.string.sign_up_pwd_check_error)
         } else {
-            pwdCheckEditText.error = "비밀번호가 다릅니다."
-            false
+            null
         }
     }
 }
