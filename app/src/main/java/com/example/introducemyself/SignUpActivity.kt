@@ -73,7 +73,6 @@ class SignUpActivity : AppCompatActivity() {
             if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
                 Toast.makeText(this, getString(R.string.sign_up_id_error_pattern), Toast.LENGTH_SHORT).show()
             } else {
-                idEditText.error = null
                 val newMember = MemberData(
                     id = inputId,
                     pwd = inputPwd,
