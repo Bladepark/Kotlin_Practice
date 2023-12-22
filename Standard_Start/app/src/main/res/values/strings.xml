@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="item_layout_profile_name">Chris Bumstead</string>
+    <string name="item_layout_profile_description">BodyBuilder</string>
 </resources>
