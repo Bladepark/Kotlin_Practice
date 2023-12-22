@@ -10,6 +10,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet.Constraint
+import androidx.constraintlayout.widget.ConstraintSet.Layout
 import kotlin.random.Random
 
 class HomeActivity : AppCompatActivity() {
@@ -22,7 +25,7 @@ class HomeActivity : AppCompatActivity() {
         val nameTextView = findViewById<TextView>(R.id.tv_homeName)
         val ageTextView = findViewById<TextView>(R.id.tv_homeAge)
         val mbtiTextView = findViewById<TextView>(R.id.tv_homeMbti)
-        val homeExitBtn = findViewById<Button>(R.id.btn_homeExit)
+        val homeExitBtn = findViewById<ConstraintLayout>(R.id.btn_homeExit)
         val webView = findViewById<WebView>(R.id.webView)
         val blogTextView = findViewById<TextView>(R.id.tv_homeBlog)
         val githubTextView = findViewById<TextView>(R.id.tv_homeGithub)

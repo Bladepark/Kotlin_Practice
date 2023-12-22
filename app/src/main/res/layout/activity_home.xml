@@ -82,18 +82,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_homeBlog" />
 
-    <Button
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_homeExit"
-        style="@style/TextDefault"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
         android:layout_marginEnd="32dp"
-        android:text="@string/btn_homefinish"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/selector_button"
+        app:layout_constraintTop_toBottomOf="@id/tv_homeGithub"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_homeGithub" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_home_face"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/btn_drawable_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_home_exit"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_home_exit"
+            style="@style/TextDefault"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="@string/btn_homefinish"
+            android:textColor="@drawable/btn_txt_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_home_face"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/textView10"
@@ -111,6 +138,5 @@
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>
