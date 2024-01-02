@@ -1,5 +1,6 @@
 package com.example.introducemyself
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,9 +11,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import kotlin.random.Random
 
 class HomeActivity : AppCompatActivity() {
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -26,6 +30,7 @@ class HomeActivity : AppCompatActivity() {
         val webView = findViewById<WebView>(R.id.webView)
         val blogTextView = findViewById<TextView>(R.id.tv_homeBlog)
         val githubTextView = findViewById<TextView>(R.id.tv_homeGithub)
+        val editProfileBtn = findViewById<Button>(R.id.btn_home_edit_profile)
 
         val id = intent.getStringExtra("memberId")
         val pwd = intent.getStringExtra("memberPwd")
@@ -67,6 +72,22 @@ class HomeActivity : AppCompatActivity() {
             intent.putExtra("memberPwd", pwd)
             setResult(RESULT_OK, intent)
             finish()
+        }
+
+        editProfileBtn.setOnClickListener {
+            //signUp Activity 수정
+            val intent = Intent(this, SignUpActivity::class.java)
+            intent.putExtra("FromActivity", "HomeActivity")
+            resultLauncher.launch(intent)
+        }
+
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // 결과가 성공인 경우 처리
+                val data: Intent? = result.data
+                val id = data?.getStringExtra("memberId")
+                val pwd = data?.getStringExtra("memberPwd")
+            }
         }
     }
 }

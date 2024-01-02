@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 
 class SignUpActivity : AppCompatActivity() {
@@ -46,11 +47,22 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        setEditProfileCheck()
+
         setServiceProvider()
 
         setTextChangedListener()
 
         setSignUpButton()
+    }
+
+    private fun setEditProfileCheck() {
+        if (intent.getStringExtra("fromActivity") != null) {
+            idEditText.visibility = View.GONE
+            pwdEditText.visibility = View.GONE
+            pwdCheckEditText.visibility = View.GONE
+            signUpBtn.text = getString(R.string.sign_up_edit_profile_finish)
+        }
     }
 
     private fun setTextChangedListener() {
@@ -73,21 +85,25 @@ class SignUpActivity : AppCompatActivity() {
             if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
                 Toast.makeText(this, getString(R.string.sign_up_id_error_pattern), Toast.LENGTH_SHORT).show()
             } else {
-                val newMember = MemberData(
-                    id = inputId,
-                    pwd = inputPwd,
-                    name = nameEditText.text.toString(),
-                    age = ageEditText.text.toString(),
-                    mbti = mbtiEditText.text.toString()
-                )
+                if (intent.getStringExtra("fromActivity") != null) {
 
-                MemberInfo.memberInfo.add(newMember)
-                Toast.makeText(this, "가입 완료! 로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, SignInActivity::class.java)
-                intent.putExtra("memberId", inputId)
-                intent.putExtra("memberPwd", inputPwd)
-                setResult(RESULT_OK, intent)
-                finish()
+                } else {
+                    val newMember = MemberData(
+                        id = inputId,
+                        pwd = inputPwd,
+                        name = nameEditText.text.toString(),
+                        age = ageEditText.text.toString(),
+                        mbti = mbtiEditText.text.toString()
+                    )
+
+                    MemberInfo.memberInfo.add(newMember)
+                    Toast.makeText(this, "가입 완료! 로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, SignInActivity::class.java)
+                    intent.putExtra("memberId", inputId)
+                    intent.putExtra("memberPwd", inputPwd)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
             }
         }
     }
@@ -226,6 +242,7 @@ class SignUpActivity : AppCompatActivity() {
             else -> null
         }
     }
+
     private fun isValidPwdCheck() : String? {
         val pwdCheck = pwdCheckEditText.text.toString()
         return if (pwdCheck != pwdEditText.text.toString()) {

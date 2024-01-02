@@ -34,6 +34,7 @@ class SignInActivity : AppCompatActivity() {
                 idEditText.setText(id)
                 pwdEditText.setText(pwd)
             }
+
         }
         signInBtn.isEnabled = false
         idEditText.doAfterTextChanged {
