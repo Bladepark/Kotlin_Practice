@@ -1,6 +1,8 @@
 package com.example.introducemyself
 
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,36 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 
 class SignUpActivity : AppCompatActivity() {
+    companion object {
+        private const val EXTRA_ENTRY_TYPE = "extra_entry_type"
+        private const val EXTRA_MEMBER_DATA = "extra_member_data"
+        fun newIntent(context: Context, entryType: SignUpEntryType, memberData: MemberData): Intent = Intent(
+            context,
+            SignUpActivity::class.java
+        ).apply {
+            putExtra(EXTRA_ENTRY_TYPE, entryType.ordinal)
+            putExtra(EXTRA_MEMBER_DATA , memberData)
+        }
+    }
+
+    private val entryType : SignUpEntryType by lazy {
+        SignUpEntryType.getEntryType(
+            intent?.getIntExtra(
+                EXTRA_ENTRY_TYPE,
+                0
+            )
+        )
+    }
+
+    private val memberData: MemberData? by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra(
+                EXTRA_MEMBER_DATA, MemberData::class.java
+            )
+        } else {
+            intent?.getParcelableExtra(EXTRA_MEMBER_DATA)
+        }
+    }
 
     private val nameEditText by lazy { findViewById<EditText>(R.id.nameTextInputEditText) }
     private val ageEditText by lazy { findViewById<EditText>(R.id.ageTextInputEditText) }
@@ -26,6 +58,7 @@ class SignUpActivity : AppCompatActivity() {
     private val emailTextInputLayout by lazy { findViewById<View>(R.id.emailTextInputLayout) }
     private val signUpBtn by lazy { findViewById<Button>(R.id.btn_signUp) }
     private val spinner by lazy { findViewById<Spinner>(R.id.spinner) }
+
 
     private val editTexts
         get() = listOf(
@@ -47,21 +80,41 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        setEditProfileCheck()
-
         setServiceProvider()
 
         setTextChangedListener()
 
+        setMemberData()
+
         setSignUpButton()
     }
 
-    private fun setEditProfileCheck() {
-        if (intent.getStringExtra("fromActivity") != null) {
-            idEditText.visibility = View.GONE
-            pwdEditText.visibility = View.GONE
-            pwdCheckEditText.visibility = View.GONE
-            signUpBtn.text = getString(R.string.sign_up_edit_profile_finish)
+    private fun setMemberData() {
+        if(entryType == SignUpEntryType.CREAT) {
+            return
+        }
+        val emailProvider = memberData?.id?.split('@')
+        Log.d("SignUpActivity", "Email Provider: $emailProvider")
+        nameEditText.setText(memberData?.name)
+        ageEditText.setText(memberData?.age)
+        mbtiEditText.setText(memberData?.mbti)
+        idEditText.setText(emailProvider?.getOrNull(0))
+        pwdEditText.setText(memberData?.pwd)
+
+        signUpBtn.text = getString(R.string.sign_up_edit_profile_finish)
+
+
+        when(emailProvider?.getOrNull(1)) {
+            "gmail.com" -> {
+                spinner.setSelection(2)
+            }
+            "naver.com" -> {
+                spinner.setSelection(3)
+            }
+            "kakao.com" -> {
+                spinner.setSelection(4)
+            }
+            else -> spinner.setSelection(1)
         }
     }
 
@@ -78,15 +131,31 @@ class SignUpActivity : AppCompatActivity() {
         signUpBtn.setOnClickListener {
             val inputId = when (spinner.selectedItemPosition) {
                 1 -> idEditText.text.toString() + emailEditText.text.toString()
-                2,3,4 -> idEditText.text.toString() + spinner.selectedItem.toString()
+                2, 3, 4 -> idEditText.text.toString() + spinner.selectedItem.toString()
                 else -> idEditText.text.toString()
             }
             val inputPwd = pwdEditText.text.toString()
             if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
-                Toast.makeText(this, getString(R.string.sign_up_id_error_pattern), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.sign_up_id_error_pattern),
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                if (intent.getStringExtra("fromActivity") != null) {
-
+                if (entryType == SignUpEntryType.UPDATE) {
+                    val updatedMember = MemberData(
+                        id = inputId,
+                        pwd = inputPwd,
+                        name = nameEditText.text.toString(),
+                        age = ageEditText.text.toString(),
+                        mbti = mbtiEditText.text.toString()
+                    )
+                    MemberInfo.updateMember(memberData?.id, updatedMember)
+                    Toast.makeText(this, "프로필 수정 완료!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.putExtra("memberId", inputId)
+                    intent.putExtra("memberPwd", inputPwd)
+                    startActivity(intent)
                 } else {
                     val newMember = MemberData(
                         id = inputId,
@@ -133,9 +202,11 @@ class SignUpActivity : AppCompatActivity() {
                         spinner.visibility = View.GONE
                         emailTextInputLayout.visibility = View.VISIBLE
                     }
+
                     else -> signUpBtn.isEnabled = true
                 }
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
     }
@@ -164,7 +235,8 @@ class SignUpActivity : AppCompatActivity() {
                         && isValidPwdCheck()?.isBlank() ?: true
                         && isValidEmail()?.isBlank() ?: true
             }
-            2,3,4 -> {
+
+            2, 3, 4 -> {
                 isValidName()?.isBlank() ?: true
                         && isValidAge()?.isBlank() ?: true
                         && isValidMbti()?.isBlank() ?: true
@@ -172,15 +244,18 @@ class SignUpActivity : AppCompatActivity() {
                         && isValidPwd()?.isBlank() ?: true
                         && isValidPwdCheck()?.isBlank() ?: true
             }
+
             else -> false
         }
     }
 
-    private fun isValidName() : String? {
+    private fun isValidName(): String? {
         val namePattern = Regex("^[a-zA-Z가-힣]*\$")
         return when {
             nameEditText.text.isBlank() -> getString(R.string.sign_up_name_error_blank)
-            !nameEditText.text.toString().matches(namePattern) -> getString(R.string.sign_up_name_error_pattern)
+            !nameEditText.text.toString()
+                .matches(namePattern) -> getString(R.string.sign_up_name_error_pattern)
+
             else -> null
         }
     }
@@ -194,7 +269,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidMbti() : String? {
+    private fun isValidMbti(): String? {
         val mbti = mbtiEditText.text.toString()
         val mbtiPattern = Regex("[EI][NS][FT][JP]")
         return when {
@@ -204,7 +279,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidId() : String? {
+    private fun isValidId(): String? {
         val id = idEditText.text.toString()
         val idPattern = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\$")
 
@@ -215,8 +290,8 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidEmail() : String? {
-        val email = when(spinner.selectedItemPosition) {
+    private fun isValidEmail(): String? {
+        val email = when (spinner.selectedItemPosition) {
             0 -> ""
             1 -> emailEditText.text.toString()
             2 -> getString(R.string.sign_up_email_provider_gmail)
@@ -233,9 +308,10 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidPwd() : String? {
+    private fun isValidPwd(): String? {
         val pwd = pwdEditText.text.toString()
-        val pwdPattern = Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\$@\$!%*#?&.])[A-Za-z[0-9]\$@\$!%*#?&.]{8,16}\$")
+        val pwdPattern =
+            Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\$@\$!%*#?&.])[A-Za-z[0-9]\$@\$!%*#?&.]{8,16}\$")
         return when {
             pwd.isBlank() -> getString(R.string.tv_pwdHint)
             !pwd.matches(pwdPattern) -> getString(R.string.sign_up_pwd_error_pattern)
@@ -243,7 +319,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidPwdCheck() : String? {
+    private fun isValidPwdCheck(): String? {
         val pwdCheck = pwdCheckEditText.text.toString()
         return if (pwdCheck != pwdEditText.text.toString()) {
             getString(R.string.sign_up_pwd_check_error)

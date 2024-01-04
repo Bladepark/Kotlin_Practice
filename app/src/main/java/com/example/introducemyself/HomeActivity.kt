@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -13,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.introducemyself.MemberInfo.memberInfo
 import kotlin.random.Random
 
 class HomeActivity : AppCompatActivity() {
@@ -44,15 +46,15 @@ class HomeActivity : AppCompatActivity() {
 
         // WebView 설정 및 JavaScript 활성화
         val webSettings: WebSettings = webView.settings
-        webSettings.javaScriptEnabled = true
+        true.also { webSettings.javaScriptEnabled = it }
         // WebViewClient를 설정하여 새 창이 아니라 현재 WebView에서 링크가 열리도록 함
         webView.webViewClient = WebViewClient()
 
         homeImgView.setImageResource(imgResources[random])
-        idTextView.setText("아이디 :" + id)
-        nameTextView.setText("이름 :" + memberInfo?.name)
-        ageTextView.setText("나이 :" + memberInfo?.age)
-        mbtiTextView.setText("MBTI :" + memberInfo?.mbti)
+        idTextView.text = "아이디 :" + memberInfo?.id
+        nameTextView.text = "이름 :" + memberInfo?.name
+        ageTextView.text = "나이 :" + memberInfo?.age
+        mbtiTextView.text = "MBTI :" + memberInfo?.mbti
 
         blogTextView.setOnClickListener {
             val url = "https://happenedtodeveloper.tistory.com/" // 원하는 링크 주소로 변경
@@ -68,26 +70,29 @@ class HomeActivity : AppCompatActivity() {
 
         homeExitBtn.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
-            intent.putExtra("memberId", id)
-            intent.putExtra("memberPwd", pwd)
-            setResult(RESULT_OK, intent)
-            finish()
+            intent.putExtra("memberId", memberInfo?.id)
+            intent.putExtra("memberPwd", memberInfo?.pwd)
+            startActivity(intent)
         }
 
         editProfileBtn.setOnClickListener {
             //signUp Activity 수정
-            val intent = Intent(this, SignUpActivity::class.java)
-            intent.putExtra("FromActivity", "HomeActivity")
-            resultLauncher.launch(intent)
-        }
-
-        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                // 결과가 성공인 경우 처리
-                val data: Intent? = result.data
-                val id = data?.getStringExtra("memberId")
-                val pwd = data?.getStringExtra("memberPwd")
-            }
+            Log.d("HomeActivity", "SignUpActivity 시작 전")
+            startActivity(
+                SignUpActivity.newIntent(
+                    context = this@HomeActivity,
+                    entryType = SignUpEntryType.UPDATE,
+                    memberData = MemberData(
+                        name = memberInfo?.name ?: "",
+                        id = memberInfo?.id ?: "",
+                        pwd = memberInfo?.pwd ?: "",
+                        age = memberInfo?.age ?: "",
+                        mbti = memberInfo?.mbti ?: ""
+                    )
+                )
+            )
+            Log.d("HomeActivity", "SignUpActivity 시작 후")
+            Log.d("HomeActivity", "MemberData: $memberInfo")
         }
     }
 }
