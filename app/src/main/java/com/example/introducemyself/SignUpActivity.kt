@@ -13,8 +13,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 class SignUpActivity : AppCompatActivity() {
     companion object {
@@ -71,12 +72,51 @@ class SignUpActivity : AppCompatActivity() {
             pwdCheckEditText
         )
 
+    private val viewModel by lazy {
+        ViewModelProvider(this)[SignUpViewModel::class.java]
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
         initView()
+        initViewModel()
+    }
+
+    private fun initViewModel() = with(viewModel) {
+        viewModel.nameErrMsg.observe(this@SignUpActivity, Observer {
+            nameEditText.error = it
+        })
+
+        viewModel.ageErrMsg.observe(this@SignUpActivity, Observer {
+            ageEditText.error = it
+        })
+
+        viewModel.mbtiErrMsg.observe(this@SignUpActivity, Observer {
+            mbtiEditText.error = it
+        })
+
+        viewModel.idErrMsg.observe(this@SignUpActivity, Observer {
+            idEditText.error = it
+        })
+
+        viewModel.pwdErrMsg.observe(this@SignUpActivity, Observer {
+            pwdEditText.error = it
+        })
+
+        viewModel.pwdCheckErrMsg.observe(this@SignUpActivity, Observer {
+            pwdCheckEditText.error = it
+        })
+
+        viewModel.emailErrMsg.observe(this@SignUpActivity, Observer {
+            emailEditText.error = it
+        })
+
+        viewModel.isSignUpBtnEnabled.observe(this@SignUpActivity, Observer {
+            signUpBtn.isEnabled = it
+        })
     }
 
     private fun initView() {
@@ -121,7 +161,15 @@ class SignUpActivity : AppCompatActivity() {
     private fun setTextChangedListener() {
         editTexts.forEach { editText ->
             editText.addTextChangedListener {
-                editText.setErrorMessage()
+                when(editText) {
+                    nameEditText -> viewModel.getMessageValidName(nameEditText.text.toString())
+                    ageEditText -> viewModel.(ageEditText.text.toString())
+                    mbtiEditText -> viewModel.setErrorMessage(mbtiEditText.text.toString())
+                    idEditText -> viewModel.setErrorMessage(idEditText.text.toString())
+                    pwdEditText -> viewModel.setErrorMessage(pwdEditText.text.toString())
+                    pwdCheckEditText -> viewModel.setErrorMessage(pwdCheckEditText.text.toString())
+                    emailEditText -> viewModel.setErrorMessage(emailEditText.text.toString())
+                }
                 setSignUpButtonEnabled()
             }
         }
@@ -136,11 +184,7 @@ class SignUpActivity : AppCompatActivity() {
             }
             val inputPwd = pwdEditText.text.toString()
             if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.sign_up_id_error_pattern),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, getString(R.string.sign_up_id_error_pattern), Toast.LENGTH_SHORT).show()
             } else {
                 if (entryType == SignUpEntryType.UPDATE) {
                     val updatedMember = MemberData(
@@ -211,18 +255,6 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun EditText.setErrorMessage() {
-        when (this) {
-            nameEditText -> nameEditText.error = isValidName()
-            ageEditText -> ageEditText.error = isValidAge()
-            mbtiEditText -> mbtiEditText.error = isValidMbti()
-            idEditText -> idEditText.error = isValidId()
-            pwdEditText -> pwdEditText.error = isValidPwd()
-            pwdCheckEditText -> pwdCheckEditText.error = isValidPwdCheck()
-            emailEditText -> emailEditText.error = isValidEmail()
-        }
-    }
-
     private fun setSignUpButtonEnabled() {
         signUpBtn.isEnabled = when (spinner.selectedItemPosition) {
             0 -> false
@@ -244,87 +276,8 @@ class SignUpActivity : AppCompatActivity() {
                         && isValidPwd()?.isBlank() ?: true
                         && isValidPwdCheck()?.isBlank() ?: true
             }
-
             else -> false
         }
     }
 
-    private fun isValidName(): String? {
-        val namePattern = Regex("^[a-zA-Z가-힣]*\$")
-        return when {
-            nameEditText.text.isBlank() -> getString(R.string.sign_up_name_error_blank)
-            !nameEditText.text.toString()
-                .matches(namePattern) -> getString(R.string.sign_up_name_error_pattern)
-
-            else -> null
-        }
-    }
-
-    private fun isValidAge(): String? {
-        val age = ageEditText.text.toString()
-        return when {
-            age.isBlank() -> getString(R.string.tv_homeAge)
-            age.toInt() < 15 || age.toInt() > 100 -> getString(R.string.sign_up_age_error_limit)
-            else -> null
-        }
-    }
-
-    private fun isValidMbti(): String? {
-        val mbti = mbtiEditText.text.toString()
-        val mbtiPattern = Regex("[EI][NS][FT][JP]")
-        return when {
-            mbti.isBlank() -> getString(R.string.tv_homeMBTI)
-            !mbti.matches(mbtiPattern) -> getString(R.string.sign_up_mbti_error_pattern)
-            else -> null
-        }
-    }
-
-    private fun isValidId(): String? {
-        val id = idEditText.text.toString()
-        val idPattern = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\$")
-
-        return when {
-            id.isBlank() -> getString(R.string.tv_idHint)
-            !id.matches(idPattern) -> getString(R.string.sign_up_id_error_pattern2)
-            else -> null
-        }
-    }
-
-    private fun isValidEmail(): String? {
-        val email = when (spinner.selectedItemPosition) {
-            0 -> ""
-            1 -> emailEditText.text.toString()
-            2 -> getString(R.string.sign_up_email_provider_gmail)
-            3 -> getString(R.string.sign_up_email_provider_naver)
-            4 -> getString(R.string.sign_up_email_provider_kakao)
-            else -> ""
-        }
-        val emailPattern = Regex("^@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$")
-
-        return when {
-            email.isBlank() -> getString(R.string.tv_idHint)
-            !email.matches(emailPattern) -> getString(R.string.sign_up_email_error_pattern)
-            else -> null
-        }
-    }
-
-    private fun isValidPwd(): String? {
-        val pwd = pwdEditText.text.toString()
-        val pwdPattern =
-            Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\$@\$!%*#?&.])[A-Za-z[0-9]\$@\$!%*#?&.]{8,16}\$")
-        return when {
-            pwd.isBlank() -> getString(R.string.tv_pwdHint)
-            !pwd.matches(pwdPattern) -> getString(R.string.sign_up_pwd_error_pattern)
-            else -> null
-        }
-    }
-
-    private fun isValidPwdCheck(): String? {
-        val pwdCheck = pwdCheckEditText.text.toString()
-        return if (pwdCheck != pwdEditText.text.toString()) {
-            getString(R.string.sign_up_pwd_check_error)
-        } else {
-            null
-        }
-    }
 }
