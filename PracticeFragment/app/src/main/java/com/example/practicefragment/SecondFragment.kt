@@ -16,7 +16,8 @@ class SecondFragment : Fragment() {
     private var listener: FragmentDataListener? = null
 
     private var param1: String? = null
-    private lateinit var binding : FragmentSecondBinding
+    private var _binding : FragmentSecondBinding? = null
+    private val binding get() = _binding!!
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,7 +41,7 @@ class SecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSecondBinding.inflate(inflater, container, false)
+        _binding = FragmentSecondBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -65,5 +66,12 @@ class SecondFragment : Fragment() {
                     putString(ARG_PARAM1, param1)
                 }
             }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Binding 객체 해제
+        _binding = null
+        listener = null
     }
 }
