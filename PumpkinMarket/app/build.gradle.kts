@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.pumpkinmarket"
-        minSdk = 30
+        minSdk = 31
         versionCode = 1
         versionName = "1.0"
 

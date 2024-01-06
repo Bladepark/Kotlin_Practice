@@ -2,16 +2,17 @@
     <string name="app_name">PumpkinMarket</string>
 
     <!--샘플 더미데이터 상품명 -->
-    <string name="sample1_name">산진 한달된 선풍기 팝니다</string>
-    <string name="sample2_name">김치냉장고</string>
-    <string name="sample3_name">샤넬 카드지갑</string>
-    <string name="sample4_name">금고</string>
-    <string name="sample5_name">갤럭시Z플립3 팝니다</string>
-    <string name="sample6_name">프라다 복조리백</string>
-    <string name="sample7_name">울산 동해오션뷰 60평 복층 펜트하우스 1일 숙박권 펜션 힐링 숙소 별장</string>
-    <string name="sample8_name">샤넬 탑핸들 가방</string>
-    <string name="sample9_name">4행정 엔진분무기 판매합니다.</string>
-    <string name="sample10_name">셀린느 버킷 가방</string>
+    <string name="sample1_title">산진 한달된 선풍기 팝니다</string>
+    <string name="sample2_title">김치냉장고</string>
+    <string name="sample3_title">샤넬 카드지갑</string>
+    <string name="sample4_title">금고</string>
+    <string name="sample5_title">갤럭시Z플립3 팝니다</string>
+    <string name="sample6_title">프라다 복조리백</string>
+    <string name="sample7_title">울산 동해오션뷰 60평 복층 펜트하우스 1일 숙박권 펜션 힐링 숙소 별장</string>
+    <string name="sample8_title">샤넬 탑핸들 가방</string>
+    <string name="sample9_title">4행정 엔진분무기 판매합니다.</string>
+    <string name="sample10_title">셀린느 버킷 가방</string>
+
     <!--샘플 더미데이터 상품 소개 -->
     <string name="sample1_description">이사가서 필요가 없어졌어요 급하게 내놓습니다</string>
     <string name="sample2_description">이사로인해 내놔요</string>
@@ -23,6 +24,7 @@
     <string name="sample8_description">샤넬 트랜디 CC 탑핸들 스몰 램스킨 블랙 금장 플랩백 !\n + "\n" + "색상 : 블랙\n" + "사이즈 : 25.5cm * 17.5cm * 8cm\n" + "구성 : 본품더스트\n" + "\n" + "급하게 돈이 필요해서 팝니다 ㅠ ㅠ</string>
     <string name="sample9_description">3년전에 사서 한번 사용하고 그대로 둔 상태입니다. 요즘 사용은 안해봤습니다. 그래서 저렴하게 내 놓습니다. 중고라 반품은 어렵습니다.\n</string>
     <string name="sample10_description">22년 신세계 대전 구매입니당\n + "셀린느 버킷백\n" + "구매해서 몇번사용했어요\n" + "까짐 스크래치 없습니다.\n" + "타지역에서 보내는거라 택배로 진행합니당!"</string>
+
     <!--샘플 더미데이터 상품 판매자 -->
     <string name="sample1_seller">대현동</string>
     <string name="sample2_seller">안마담</string>
@@ -34,6 +36,7 @@
     <string name="sample8_seller">난쉽</string>
     <string name="sample9_seller">알뜰한</string>
     <string name="sample10_seller">똑태현</string>
+
     <!--샘플 더미데이터 주소 -->
     <string name="sample1_address">서울 서대문구 창천동</string>
     <string name="sample2_address">인천 계양구 귤현동</string>
@@ -45,5 +48,43 @@
     <string name="sample8_address">동래구 온천제2동</string>
     <string name="sample9_address">원주시 명륜2동</string>
     <string name="sample10_address">중구 동화동</string>
+
+    <!--샘플 더미데이터 상품 가격 -->
+    <string name="sample1_price">1000</string>
+    <string name="sample2_price">20000</string>
+    <string name="sample3_price">10000</string>
+    <string name="sample4_price">10000</string>
+    <string name="sample5_price">150000</string>
+    <string name="sample6_price">50000</string>
+    <string name="sample7_price">150000</string>
+    <string name="sample8_price">180000</string>
+    <string name="sample9_price">30000</string>
+    <string name="sample10_price">190000</string>
+
+    <!--샘플 더미데이터 좋아요 -->
+    <string name="sample1_like">13</string>
+    <string name="sample2_like">8</string>
+    <string name="sample3_like">23</string>
+    <string name="sample4_like">14</string>
+    <string name="sample5_like">22</string>
+    <string name="sample6_like">25</string>
+    <string name="sample7_like">142</string>
+    <string name="sample8_like">31</string>
+    <string name="sample9_like">7</string>
+    <string name="sample10_like">40</string>
+
+    <!--샘플 더미데이터 채팅 -->
+    <string name="sample1_chat">25</string>
+    <string name="sample2_chat">28</string>
+    <string name="sample3_chat">5</string>
+    <string name="sample4_chat">17</string>
+    <string name="sample5_chat">9</string>
+    <string name="sample6_chat">16</string>
+    <string name="sample7_chat">54</string>
+    <string name="sample8_chat">7</string>
+    <string name="sample9_chat">28</string>
+    <string name="sample10_chat">6</string>
+    <string name="main_top_bar_title">내배캠동</string>
+
 
 </resources>
