@@ -2,19 +2,21 @@ package com.example.pumpkinmarket
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.content.res.ColorStateList
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AlphaAnimation
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pumpkinmarket.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +33,52 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
         setAdapter()
         setNotification()
+        setFAB()
         this.onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun setFAB() {
+        var isTop = true
+
+        binding.mainRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (binding.mainRecyclerView.canScrollVertically(-1)
+                        .not() && newState == RecyclerView.SCROLL_STATE_IDLE
+                ) {
+                    binding.floatingActionButton.startAnimation(
+                        AlphaAnimation(
+                            1f,
+                            0f
+                        ).apply { duration = 500 })
+                    binding.floatingActionButton.visibility = View.INVISIBLE
+                    isTop = true
+                } else {
+                    if (isTop) {
+                        binding.floatingActionButton.visibility = View.VISIBLE
+                        binding.floatingActionButton.startAnimation(
+                            AlphaAnimation(
+                                0f,
+                                1f
+                            ).apply { duration = 500 })
+                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                this@MainActivity,
+                                R.color.white
+                            )
+                        )
+                        isTop = false
+                    }
+                }
+            }
+        })
+
+        binding.floatingActionButton.setOnClickListener {
+            binding.mainRecyclerView.smoothScrollToPosition(0)
+            binding.floatingActionButton.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.pumpkin))
+        }
+
     }
 
     private fun setNotification() {
@@ -39,36 +86,31 @@ class MainActivity : AppCompatActivity() {
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
             val builder: NotificationCompat.Builder
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // 26 버전 이상
-                val channelId = "one-channel"
-                val channelName = "My Channel One"
-                val channel = NotificationChannel(
-                    channelId,
-                    channelName,
-                    NotificationManager.IMPORTANCE_DEFAULT
-                ).apply {
-                    // 채널에 다양한 정보 설정
-                    description = "My Channel One Description"
-                    setShowBadge(true)
-                    val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                    val audioAttributes = AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .setUsage(AudioAttributes.USAGE_ALARM)
-                        .build()
-                    setSound(uri, audioAttributes)
-                    enableVibration(true)
-                }
-                // 채널을 NotificationManager에 등록
-                manager.createNotificationChannel(channel)
-
-                // 채널을 이용하여 builder 생성
-                builder = NotificationCompat.Builder(this, channelId)
-
-            } else {
-                // 26 버전 이하
-                builder = NotificationCompat.Builder(this)
+            // 26 버전 이상
+            val channelId = "one-channel"
+            val channelName = "My Channel One"
+            val channel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                // 채널에 다양한 정보 설정
+                description = "My Channel One Description"
+                setShowBadge(true)
+                val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                val audioAttributes = AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .build()
+                setSound(uri, audioAttributes)
+                enableVibration(true)
             }
+            // 채널을 NotificationManager에 등록
+            manager.createNotificationChannel(channel)
+
+            // 채널을 이용하여 builder 생성
+            builder = NotificationCompat.Builder(this, channelId)
+
             // 알림의 기본 정보
             builder.run {
                 setSmallIcon(R.mipmap.ic_launcher)
@@ -203,12 +245,19 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-
-
         val adapter = PumpkinAdapter(dataList)
         binding.mainRecyclerView.adapter = adapter
         binding.mainRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.mainRecyclerView.addItemDecoration(PumpkinAdapterDecoration())
+
+        adapter.itemClick = object : PumpkinAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                val clickedItem = dataList[position]
+                val intent = Intent(this@MainActivity, DetailActivity::class.java)
+                intent.putExtra("pumpkinItem", clickedItem)
+                startActivity(intent)
+            }
+        }
     }
 
     private val callback = object : OnBackPressedCallback(true) {
@@ -220,7 +269,7 @@ class MainActivity : AppCompatActivity() {
                 .setPositiveButton("확인") { dialog, _ ->
                     finish()
                 }
-                .setNegativeButton("취소"){ dialog, _ ->
+                .setNegativeButton("취소") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()

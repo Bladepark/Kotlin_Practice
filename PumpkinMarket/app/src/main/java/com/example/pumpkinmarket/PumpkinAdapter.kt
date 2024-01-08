@@ -12,6 +12,13 @@ import com.example.pumpkinmarket.databinding.ItemRecyclerViewBinding
 
 class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
     RecyclerView.Adapter<PumpkinAdapter.Holder>() {
+
+    interface ItemClick {
+        fun onClick(view: View, position: Int)
+    }
+
+    var itemClick : ItemClick? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PumpkinAdapter.Holder {
         val binding = ItemRecyclerViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return Holder(binding)
@@ -24,6 +31,11 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         holder.itemPrice.text = mItems[position].itemPrice
         holder.itemChat.text = mItems[position].itemChat
         holder.itemLike.text = mItems[position].itemLike
+
+        holder.itemView.setOnClickListener {
+            itemClick?.onClick(it, position)
+        }
+
     }
 
     override fun getItemCount(): Int {

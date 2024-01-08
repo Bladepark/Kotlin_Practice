@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="pumpkin">#FF5722</color>
-    <color name="mediumturquoise">#48D1CC</color>
+    <color name="pumpkin">#FA6E42</color>
+    <color name="mediumturquoise">#0EA59F</color>
+    <color name="hint">#606060</color>
 </resources>

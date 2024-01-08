@@ -12,7 +12,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:src="@drawable/sample1"
-        android:background="@drawable/round_background"
+        android:background="@drawable/round_background_white"
         android:clipToOutline="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,6 +28,7 @@
         android:maxLines="2"
         android:text="@string/sample7_title"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_product_img"
         app:layout_constraintTop_toTopOf="@+id/iv_product_img" />
@@ -39,7 +40,7 @@
         android:text="@string/sample1_address"
         android:layout_marginTop="5dp"
         android:textSize="15sp"
-        android:textColor="#606060"
+        android:textColor="@color/hint"
         app:layout_constraintStart_toStartOf="@+id/tv_product_title"
         app:layout_constraintTop_toBottomOf="@id/tv_product_title" />
 
