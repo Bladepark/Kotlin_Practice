@@ -43,24 +43,14 @@ class MainActivity : AppCompatActivity() {
         binding.mainRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (binding.mainRecyclerView.canScrollVertically(-1)
-                        .not() && newState == RecyclerView.SCROLL_STATE_IDLE
-                ) {
-                    binding.floatingActionButton.startAnimation(
-                        AlphaAnimation(
-                            1f,
-                            0f
-                        ).apply { duration = 500 })
+                if (binding.mainRecyclerView.canScrollVertically(-1).not() && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    binding.floatingActionButton.startAnimation(AlphaAnimation(1f, 0f).apply { duration = 500 })
                     binding.floatingActionButton.visibility = View.INVISIBLE
                     isTop = true
                 } else {
                     if (isTop) {
                         binding.floatingActionButton.visibility = View.VISIBLE
-                        binding.floatingActionButton.startAnimation(
-                            AlphaAnimation(
-                                0f,
-                                1f
-                            ).apply { duration = 500 })
+                        binding.floatingActionButton.startAnimation(AlphaAnimation(0f, 1f).apply { duration = 500 })
                         binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(
                             ContextCompat.getColor(
                                 this@MainActivity,
@@ -256,6 +246,23 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, DetailActivity::class.java)
                 intent.putExtra("pumpkinItem", clickedItem)
                 startActivity(intent)
+            }
+        }
+
+        adapter.itemLongClick = object : PumpkinAdapter.ItemLongClick {
+            override fun onLongClick(view: View, position: Int) {
+                val longClickedItem = dataList[position]
+                AlertDialog.Builder(this@MainActivity)
+                    .setIcon(R.drawable.chat)
+                    .setTitle("상품 삭제")
+                    .setMessage("상품을 정말로 삭제하시겠습니까?")
+                    .setPositiveButton("확인") { dialog, _ ->
+                        dataList.remove(longClickedItem)
+                        adapter.notifyDataSetChanged()
+                    }
+                    .setNegativeButton("취소") { dialog, _ ->
+                        dialog.dismiss()
+                    }.show()
             }
         }
     }

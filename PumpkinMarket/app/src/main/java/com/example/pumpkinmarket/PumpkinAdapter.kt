@@ -17,7 +17,12 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         fun onClick(view: View, position: Int)
     }
 
+    interface ItemLongClick {
+        fun onLongClick(view: View, position: Int)
+    }
+
     var itemClick : ItemClick? = null
+    var itemLongClick : ItemLongClick? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PumpkinAdapter.Holder {
         val binding = ItemRecyclerViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -35,7 +40,6 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         holder.itemView.setOnClickListener {
             itemClick?.onClick(it, position)
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -49,6 +53,13 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         val itemPrice = binding.tvProductPrice
         val itemChat = binding.tvChatCount
         val itemLike = binding.tvLikeCount
+
+        init {
+            itemView.setOnLongClickListener {
+                itemLongClick?.onLongClick(it, adapterPosition)
+                true
+            }
+        }
     }
 }
 
