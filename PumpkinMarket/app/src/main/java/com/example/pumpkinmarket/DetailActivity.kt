@@ -35,18 +35,23 @@ class DetailActivity : AppCompatActivity() {
             isLiked = it.isLiked
             binding.detailItemLike.setImageResource(if (isLiked) R.drawable.heart_filled else R.drawable.heart)
             binding.detailItemLike.setOnClickListener {
-                if (isLiked.not()) {
-                    binding.detailItemLike.setImageResource(R.drawable.heart_filled)
-                    Snackbar.make(binding.constraintBottomBar, "관심 목록에 추가되었습니다.", Snackbar.LENGTH_SHORT).show()
-                    isLiked = true
-                } else {
-                    binding.detailItemLike.setImageResource(R.drawable.heart)
-                    isLiked = false
-                }
+                toggleLike()
             }
             binding.detailTempertureDescription.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         }
     }
+
+    private fun toggleLike() {
+        isLiked = if (isLiked.not()) {
+            binding.detailItemLike.setImageResource(R.drawable.heart_filled)
+            Snackbar.make(binding.constraintBottomBar, "관심 목록에 추가되었습니다.", Snackbar.LENGTH_SHORT).show()
+            true
+        } else {
+            binding.detailItemLike.setImageResource(R.drawable.heart)
+            false
+        }
+    }
+
     private fun setBackBtn() {
         binding.ivBack.setOnClickListener {
             val likePosition = intent.getIntExtra("likePosition", 0)
@@ -58,6 +63,4 @@ class DetailActivity : AppCompatActivity() {
             if(isFinishing.not())finish()
         }
     }
-
-
 }
