@@ -37,13 +37,9 @@ class MainActivity : AppCompatActivity() {
         setAdapter()
         setNotification()
         setFAB()
-        setActivityResultLauncher()
         this.onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    private fun setActivityResultLauncher() {
-
-    }
 
     private fun setFAB() {
         var isTop = true
