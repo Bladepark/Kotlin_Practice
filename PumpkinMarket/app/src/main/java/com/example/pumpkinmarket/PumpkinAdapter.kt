@@ -1,5 +1,6 @@
 package com.example.pumpkinmarket
 
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -7,6 +8,7 @@ import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pumpkinmarket.databinding.ItemRecyclerViewBinding
 
@@ -35,7 +37,9 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         holder.itemAddress.text = mItems[position].itemAddress
         holder.itemPrice.text = mItems[position].itemPrice
         holder.itemChat.text = mItems[position].itemChat
-        holder.itemLike.text = mItems[position].itemLike
+        holder.itemLike.text = mItems[position].itemLike.toString()
+        if(mItems[position].isLiked) holder.likeIcon.setImageResource(R.drawable.heart_filled) else holder.likeIcon.setImageResource(R.drawable.heart)
+
 
         holder.itemView.setOnClickListener {
             itemClick?.onClick(it, position)
@@ -53,6 +57,7 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         val itemPrice = binding.tvProductPrice
         val itemChat = binding.tvChatCount
         val itemLike = binding.tvLikeCount
+        val likeIcon = binding.ivLike
 
         init {
             itemView.setOnLongClickListener {

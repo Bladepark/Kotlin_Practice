@@ -11,7 +11,8 @@ data class PumpkinItem(
     val itemAddress: String?,
     val itemPrice: String?,
     var itemChat: String?,
-    var itemLike: String?
+    var itemLike: Int,
+    var isLiked: Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -21,7 +22,8 @@ data class PumpkinItem(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readString()
+        parcel.readInt(),
+        parcel.readBoolean()
     ) {
     }
 
@@ -33,7 +35,8 @@ data class PumpkinItem(
         parcel.writeString(itemAddress)
         parcel.writeString(itemPrice)
         parcel.writeString(itemChat)
-        parcel.writeString(itemLike)
+        parcel.writeInt(itemLike)
+        parcel.writeBoolean(isLiked)
     }
 
     override fun describeContents(): Int {

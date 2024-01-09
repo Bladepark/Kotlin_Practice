@@ -12,6 +12,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AlphaAnimation
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -22,6 +24,7 @@ import com.example.pumpkinmarket.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +37,12 @@ class MainActivity : AppCompatActivity() {
         setAdapter()
         setNotification()
         setFAB()
+        setActivityResultLauncher()
         this.onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun setActivityResultLauncher() {
+
     }
 
     private fun setFAB() {
@@ -76,16 +84,14 @@ class MainActivity : AppCompatActivity() {
             val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
             val builder: NotificationCompat.Builder
-            // 26 버전 이상
-            val channelId = "one-channel"
-            val channelName = "My Channel One"
+            val channelId = "Pumpkin-channel"
+            val channelName = "Pumpkin Market Channel"
             val channel = NotificationChannel(
                 channelId,
                 channelName,
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                // 채널에 다양한 정보 설정
-                description = "My Channel One Description"
+                description = "Pumpkin Market Channel Notification"
                 setShowBadge(true)
                 val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
                 val audioAttributes = AudioAttributes.Builder()
@@ -95,10 +101,7 @@ class MainActivity : AppCompatActivity() {
                 setSound(uri, audioAttributes)
                 enableVibration(true)
             }
-            // 채널을 NotificationManager에 등록
             manager.createNotificationChannel(channel)
-
-            // 채널을 이용하여 builder 생성
             builder = NotificationCompat.Builder(this, channelId)
 
             // 알림의 기본 정보
@@ -123,7 +126,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample1_address),
                 getString(R.string.sample1_price),
                 getString(R.string.sample1_chat),
-                getString(R.string.sample1_like)
+                getString(R.string.sample1_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -135,7 +139,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample2_address),
                 getString(R.string.sample2_price),
                 getString(R.string.sample2_chat),
-                getString(R.string.sample2_like)
+                getString(R.string.sample2_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -147,7 +152,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample3_address),
                 getString(R.string.sample3_price),
                 getString(R.string.sample3_chat),
-                getString(R.string.sample3_like)
+                getString(R.string.sample3_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -159,7 +165,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample4_address),
                 getString(R.string.sample4_price),
                 getString(R.string.sample4_chat),
-                getString(R.string.sample4_like)
+                getString(R.string.sample4_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -171,7 +178,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample5_address),
                 getString(R.string.sample5_price),
                 getString(R.string.sample5_chat),
-                getString(R.string.sample5_like)
+                getString(R.string.sample5_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -183,7 +191,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample6_address),
                 getString(R.string.sample6_price),
                 getString(R.string.sample6_chat),
-                getString(R.string.sample6_like)
+                getString(R.string.sample6_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -195,7 +204,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample7_address),
                 getString(R.string.sample7_price),
                 getString(R.string.sample7_chat),
-                getString(R.string.sample7_like)
+                getString(R.string.sample7_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -207,7 +217,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample8_address),
                 getString(R.string.sample8_price),
                 getString(R.string.sample8_chat),
-                getString(R.string.sample8_like)
+                getString(R.string.sample8_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -219,7 +230,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample9_address),
                 getString(R.string.sample9_price),
                 getString(R.string.sample9_chat),
-                getString(R.string.sample9_like)
+                getString(R.string.sample9_like).toInt(),
+                false
             )
         )
         dataList.add(
@@ -231,7 +243,8 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample10_address),
                 getString(R.string.sample10_price),
                 getString(R.string.sample10_chat),
-                getString(R.string.sample10_like)
+                getString(R.string.sample10_like).toInt(),
+                false
             )
         )
 
@@ -244,8 +257,26 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(view: View, position: Int) {
                 val clickedItem = dataList[position]
                 val intent = Intent(this@MainActivity, DetailActivity::class.java)
+                intent.putExtra("likePosition", position)
                 intent.putExtra("pumpkinItem", clickedItem)
-                startActivity(intent)
+                activityResultLauncher.launch(intent)
+            }
+        }
+
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                val likePosition = it.data?.getIntExtra("likePosition",0) as Int
+                val isLiked = it.data?.getBooleanExtra("isLiked",false) as Boolean
+                if (isLiked) {
+                    dataList[likePosition].isLiked = true
+                    dataList[likePosition].itemLike += 1
+                } else {
+                    if (dataList[likePosition].isLiked) {
+                        dataList[likePosition].isLiked = false
+                        dataList[likePosition].itemLike -= 1
+                    }
+                }
+                adapter.notifyItemChanged(likePosition)
             }
         }
 
