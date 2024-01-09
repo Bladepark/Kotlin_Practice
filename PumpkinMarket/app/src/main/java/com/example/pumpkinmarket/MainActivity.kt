@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (binding.mainRecyclerView.canScrollVertically(-1).not() && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    binding.floatingActionButton.startAnimation(AlphaAnimation(1f, 0f).apply { duration = 500 })
+                    binding.floatingActionButton.startAnimation(AlphaAnimation(1f, 0f).apply { duration = 500 }) // AlphaAnimation 투명도를 조절하는 클래스
                     binding.floatingActionButton.visibility = View.INVISIBLE
                     isTop = true
                 } else {

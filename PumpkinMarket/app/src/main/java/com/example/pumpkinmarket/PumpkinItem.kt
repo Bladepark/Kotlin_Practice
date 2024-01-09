@@ -24,8 +24,7 @@ data class PumpkinItem(
         parcel.readString(),
         parcel.readInt(),
         parcel.readBoolean()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(itemImage)

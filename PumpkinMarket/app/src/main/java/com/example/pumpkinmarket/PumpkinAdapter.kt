@@ -23,11 +23,12 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         fun onLongClick(view: View, position: Int)
     }
 
-    var itemClick : ItemClick? = null
-    var itemLongClick : ItemLongClick? = null
+    var itemClick: ItemClick? = null
+    var itemLongClick: ItemLongClick? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PumpkinAdapter.Holder {
-        val binding = ItemRecyclerViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemRecyclerViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return Holder(binding)
     }
 
@@ -38,7 +39,11 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         holder.itemPrice.text = mItems[position].itemPrice
         holder.itemChat.text = mItems[position].itemChat
         holder.itemLike.text = mItems[position].itemLike.toString()
-        if(mItems[position].isLiked) holder.likeIcon.setImageResource(R.drawable.heart_filled) else holder.likeIcon.setImageResource(R.drawable.heart)
+        if (mItems[position].isLiked) {
+            holder.likeIcon.setImageResource(R.drawable.heart_filled)
+        } else {
+            holder.likeIcon.setImageResource(R.drawable.heart)
+        }
 
 
         holder.itemView.setOnClickListener {
@@ -87,7 +92,13 @@ class PumpkinAdapterDecoration : RecyclerView.ItemDecoration() {
             c.drawRect(left, top, right, bottom, paint)
         }
     }
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
         super.getItemOffsets(outRect, view, parent, state)
         val offset = 10
         outRect.top = offset
