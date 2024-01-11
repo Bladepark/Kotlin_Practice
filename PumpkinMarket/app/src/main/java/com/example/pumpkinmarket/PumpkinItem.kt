@@ -11,7 +11,7 @@ data class PumpkinItem(
     val itemDescription: String,
     val itemSeller: String,
     val itemAddress: String,
-    val itemPrice: String,
+    val itemPrice: Int,
     var itemChat: String,
     var itemLike: Int,
     var isLiked: Boolean

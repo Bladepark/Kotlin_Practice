@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample1_description),
                 getString(R.string.sample1_seller),
                 getString(R.string.sample1_address),
-                getString(R.string.sample1_price),
+                getString(R.string.sample1_price).toInt(),
                 getString(R.string.sample1_chat),
                 getString(R.string.sample1_like).toInt(),
                 false
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample2_description),
                 getString(R.string.sample2_seller),
                 getString(R.string.sample2_address),
-                getString(R.string.sample2_price),
+                getString(R.string.sample2_price).toInt(),
                 getString(R.string.sample2_chat),
                 getString(R.string.sample2_like).toInt(),
                 false
@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample3_description),
                 getString(R.string.sample3_seller),
                 getString(R.string.sample3_address),
-                getString(R.string.sample3_price),
+                getString(R.string.sample3_price).toInt(),
                 getString(R.string.sample3_chat),
                 getString(R.string.sample3_like).toInt(),
                 false
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample4_description),
                 getString(R.string.sample4_seller),
                 getString(R.string.sample4_address),
-                getString(R.string.sample4_price),
+                getString(R.string.sample4_price).toInt(),
                 getString(R.string.sample4_chat),
                 getString(R.string.sample4_like).toInt(),
                 false
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample5_description),
                 getString(R.string.sample5_seller),
                 getString(R.string.sample5_address),
-                getString(R.string.sample5_price),
+                getString(R.string.sample5_price).toInt(),
                 getString(R.string.sample5_chat),
                 getString(R.string.sample5_like).toInt(),
                 false
@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample6_description),
                 getString(R.string.sample6_seller),
                 getString(R.string.sample6_address),
-                getString(R.string.sample6_price),
+                getString(R.string.sample6_price).toInt(),
                 getString(R.string.sample6_chat),
                 getString(R.string.sample6_like).toInt(),
                 false
@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample7_description),
                 getString(R.string.sample7_seller),
                 getString(R.string.sample7_address),
-                getString(R.string.sample7_price),
+                getString(R.string.sample7_price).toInt(),
                 getString(R.string.sample7_chat),
                 getString(R.string.sample7_like).toInt(),
                 false
@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample8_description),
                 getString(R.string.sample8_seller),
                 getString(R.string.sample8_address),
-                getString(R.string.sample8_price),
+                getString(R.string.sample8_price).toInt(),
                 getString(R.string.sample8_chat),
                 getString(R.string.sample8_like).toInt(),
                 false
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample9_description),
                 getString(R.string.sample9_seller),
                 getString(R.string.sample9_address),
-                getString(R.string.sample9_price),
+                getString(R.string.sample9_price).toInt(),
                 getString(R.string.sample9_chat),
                 getString(R.string.sample9_like).toInt(),
                 false
@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.sample10_description),
                 getString(R.string.sample10_seller),
                 getString(R.string.sample10_address),
-                getString(R.string.sample10_price),
+                getString(R.string.sample10_price).toInt(),
                 getString(R.string.sample10_chat),
                 getString(R.string.sample10_like).toInt(),
                 false
@@ -253,26 +253,26 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(view: View, position: Int) {
                 val clickedItem = dataList[position]
                 val intent = Intent(this@MainActivity, DetailActivity::class.java)
-                intent.putExtra("likePosition", position)
-                intent.putExtra("pumpkinItem", clickedItem)
+                intent.putExtra(Constants.ITEM_POSITON, position)
+                intent.putExtra(Constants.PUMPKIN_ITEM, clickedItem)
                 activityResultLauncher.launch(intent)
             }
         }
 
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
-                val likePosition = it.data?.getIntExtra("likePosition",0) as Int
-                val isLiked = it.data?.getBooleanExtra("isLiked",false) as Boolean
+                val itemPosition = it.data?.getIntExtra(Constants.ITEM_POSITON,0) as Int
+                val isLiked = it.data?.getBooleanExtra(Constants.IS_LIKE,false) as Boolean
                 if (isLiked) {
-                    dataList[likePosition].isLiked = true
-                    dataList[likePosition].itemLike += 1
+                    dataList[itemPosition].isLiked = true
+                    dataList[itemPosition].itemLike += 1
                 } else {
-                    if (dataList[likePosition].isLiked) {
-                        dataList[likePosition].isLiked = false
-                        dataList[likePosition].itemLike -= 1
+                    if (dataList[itemPosition].isLiked) {
+                        dataList[itemPosition].isLiked = false
+                        dataList[itemPosition].itemLike -= 1
                     }
                 }
-                adapter.notifyItemChanged(likePosition)
+                adapter.notifyItemChanged(itemPosition)
             }
         }
 

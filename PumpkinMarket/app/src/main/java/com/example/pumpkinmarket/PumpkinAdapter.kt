@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pumpkinmarket.databinding.ItemRecyclerViewBinding
+import java.text.DecimalFormat
 
 class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
     RecyclerView.Adapter<PumpkinAdapter.Holder>() {
@@ -36,7 +37,7 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         holder.itemImage.setImageResource(mItems[position].itemImage)
         holder.itemTitle.text = mItems[position].itemTitle
         holder.itemAddress.text = mItems[position].itemAddress
-        holder.itemPrice.text = mItems[position].itemPrice
+        holder.itemPrice.text = DecimalFormat("#,###").format(mItems[position].itemPrice)+"원"
         holder.itemChat.text = mItems[position].itemChat
         holder.itemLike.text = mItems[position].itemLike.toString()
         if (mItems[position].isLiked) {
@@ -48,6 +49,11 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
 
         holder.itemView.setOnClickListener {
             itemClick?.onClick(it, position)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            itemLongClick?.onLongClick(it, position)
+            return@setOnLongClickListener true
         }
     }
 
@@ -63,13 +69,6 @@ class PumpkinAdapter(private val mItems: MutableList<PumpkinItem>) :
         val itemChat = binding.tvChatCount
         val itemLike = binding.tvLikeCount
         val likeIcon = binding.ivLike
-
-        init {
-            itemView.setOnLongClickListener {
-                itemLongClick?.onLongClick(it, adapterPosition)
-                true
-            }
-        }
     }
 }
 

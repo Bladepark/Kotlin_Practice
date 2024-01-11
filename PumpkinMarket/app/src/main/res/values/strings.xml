@@ -50,16 +50,16 @@
     <string name="sample10_address">중구 동화동</string>
 
     <!--샘플 더미데이터 상품 가격 -->
-    <string name="sample1_price">1,000원</string>
-    <string name="sample2_price">20,000원</string>
-    <string name="sample3_price">10,000원</string>
-    <string name="sample4_price">10,000원</string>
-    <string name="sample5_price">150,000원</string>
-    <string name="sample6_price">50,000원</string>
-    <string name="sample7_price">150,000원</string>
-    <string name="sample8_price">180,000원</string>
-    <string name="sample9_price">30,000원</string>
-    <string name="sample10_price">190,000원</string>
+    <string name="sample1_price">1000</string>
+    <string name="sample2_price">20000</string>
+    <string name="sample3_price">10000</string>
+    <string name="sample4_price">10000</string>
+    <string name="sample5_price">150000</string>
+    <string name="sample6_price">50000</string>
+    <string name="sample7_price">150000</string>
+    <string name="sample8_price">180000</string>
+    <string name="sample9_price">30000</string>
+    <string name="sample10_price">190000</string>
 
     <!--샘플 더미데이터 좋아요 -->
     <string name="sample1_like">13</string>
@@ -84,7 +84,12 @@
     <string name="sample8_chat">7</string>
     <string name="sample9_chat">28</string>
     <string name="sample10_chat">6</string>
+
+    <!-- 기타 스트링 처리 -->
     <string name="main_top_bar_title">내배캠동</string>
+    <string name="detail_manner_title">매너온도</string>
+    <string name="detail_manner_temperture">39.3 ℃</string>
+    <string name="detail_chat_title">채팅하기</string>
 
 
 </resources>
