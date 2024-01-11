@@ -1,5 +1,6 @@
 package com.example.introducemyself
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -64,61 +65,48 @@ class SignUpViewModel : ViewModel() {
     val isSignUpBtnEnabled: LiveData<Boolean>
         get() = _isSignUpBtnEnabled
 
-//    private val errorMessages
-//        get() = listOf(
-//            _nameErrMsg,
-//            _ageErrMsg,
-//            _mbtiErrMsg,
-//            _idErrMsg,
-//            _pwdErrMsg,
-//            _pwdCheckErrMsg,
-//            _emailErrMsg
-//        )
 
     fun getMessageValidName(name: String) {
         val namePattern = Regex("^[a-zA-Z가-힣]*\$")
         _nameErrMsg.value = when {
+            // TODO 현재 스트링 받아오는 곳이 문제가 있음.
             name.isBlank() -> SignUpErrorMessage.NAME_BLANK.message.toString()
             name.matches(namePattern).not() -> SignUpErrorMessage.NAME_PATTERN.message.toString()
             else -> null
         }
+        Log.d("EDITTEXTCHECK", _nameErrMsg.value.toString())
     }
 
-    private fun getMessageValidAge(age: String) {
+    fun getMessageValidAge(age: String) {
         _ageErrMsg.value = when {
             age.isBlank() -> SignUpErrorMessage.AGE_BLANK.message.toString()
             age.toInt() < 15 || age.toInt() > 100 -> SignUpErrorMessage.AGE_PATTERN.message.toString()
             else -> null
         }
+        Log.d("EDITTEXTCHECK", _ageErrMsg.value.toString())
     }
 
-    private fun getMessageValidMbti(mbti: String) {
+    fun getMessageValidMbti(mbti: String) {
         val mbtiPattern = Regex("[EI][NS][FT][JP]")
         _mbtiErrMsg.value = when {
             mbti.isBlank() -> SignUpErrorMessage.MBTI_BLANK.message.toString()
             mbti.matches(mbtiPattern).not() -> SignUpErrorMessage.MBTI_PATTERN.message.toString()
             else -> null
         }
+        Log.d("EDITTEXTCHECK", _mbtiErrMsg.value.toString())
     }
 
-    private fun getMessageValidId(id: String) {
+    fun getMessageValidId(id: String) {
         val idPattern = Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\$")
         _idErrMsg.value = when {
             id.isBlank() -> SignUpErrorMessage.ID_BLANK.message.toString()
             id.matches(idPattern).not() -> SignUpErrorMessage.ID_PATTERN.message.toString()
             else -> null
         }
+        Log.d("EDITTEXTCHECK", _idErrMsg.value.toString())
     }
 
-    private fun getMessageValidEmail(email: String) {
-//        val spEmail = when (spinner.selectedItemPosition) {
-//            0 -> ""
-//            1 -> emailEditText.text.toString()
-//            2 -> SignUpErrorMessage.EMAIL_BLANK.message.toString()  // 수정
-//            3 -> SignUpErrorMessage.EMAIL_BLANK.message.toString()  // 수정
-//            4 -> SignUpErrorMessage.EMAIL_BLANK.message.toString()  // 수정
-//            else -> ""
-//        }
+    fun getMessageValidEmail(email: String) {
         val emailPattern = Regex("^@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$")
 
         _emailErrMsg.value = when {
@@ -126,9 +114,10 @@ class SignUpViewModel : ViewModel() {
             email.matches(emailPattern).not() -> SignUpErrorMessage.EMAIL_PATTERN.message.toString()
             else -> null
         }
+        Log.d("EDITTEXTCHECK", _emailErrMsg.value.toString())
     }
 
-    private fun getMessageValidPwd(pwd: String) {
+    fun getMessageValidPwd(pwd: String) {
         val pwdPattern =
             Regex("^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[\$@\$!%*#?&.])[A-Za-z[0-9]\$@\$!%*#?&.]{8,16}\$")
         _pwdErrMsg.value = when {
@@ -136,14 +125,76 @@ class SignUpViewModel : ViewModel() {
             pwd.matches(pwdPattern).not() -> SignUpErrorMessage.PWD_PATTERN.message.toString()
             else -> null
         }
+        Log.d("EDITTEXTCHECK", _pwdErrMsg.value.toString())
     }
 
-    private fun getMessageValidPwdCheck(text: String) {
-        val pwdCheck = pwdCheckEditText.text.toString()
-        _pwdCheckErrMsg.value = if (pwdCheck != pwdEditText.text.toString()) {
+    fun getMessageValidPwdCheck(pwd: String, pwdCheck: String) {
+        _pwdCheckErrMsg.value = if (pwdCheck != pwd) {
             SignUpErrorMessage.PWDCHECK_PATTERN.message.toString()
         } else {
             null
+        }
+        Log.d("EDITTEXTCHECK", _pwdCheckErrMsg.value.toString())
+    }
+
+    fun setSignUpButtonEnabled(spinnerPosition: Int) {
+        _isSignUpBtnEnabled.value = when (spinnerPosition) {
+            1 -> {
+                nameErrMsg.value == null
+                        && ageErrMsg.value == null
+                        && mbtiErrMsg.value == null
+                        && idErrMsg.value == null
+                        && emailErrMsg.value == null
+                        && pwdErrMsg.value == null
+                        && pwdCheckErrMsg.value == null
+            }
+
+            2, 3, 4 -> {
+                nameErrMsg.value == null
+                        && ageErrMsg.value == null
+                        && mbtiErrMsg.value == null
+                        && idErrMsg.value == null
+                        && pwdErrMsg.value == null
+                        && pwdCheckErrMsg.value == null
+            }
+
+            else -> false
+        }
+        Log.d("_isSignUpBtnEnabled", _isSignUpBtnEnabled.value.toString())
+        Log.d("spinnerPosition", spinnerPosition.toString())
+    }
+
+    fun onSignUpButtonClick(
+        entryType: SignUpEntryType,
+        inputId: String,
+        inputPwd: String,
+        inputName: String,
+        inputAge: String,
+        inputMbti: String,
+        memberId: String?
+    ) {
+        if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
+            _idErrMsg.value = SignUpErrorMessage.ID_PATTERN.message.toString()
+        } else {
+            if (entryType == SignUpEntryType.UPDATE) {
+                val updatedMember = MemberData(
+                    id = inputId,
+                    pwd  = inputPwd,
+                    name = inputName,
+                    age = inputAge,
+                    mbti = inputMbti
+                )
+                MemberInfo.updateMember(memberId, updatedMember)
+            } else {
+                val newMemberData = MemberData(
+                    id = inputId,
+                    pwd  = inputPwd,
+                    name = inputName,
+                    age = inputAge,
+                    mbti = inputMbti
+                )
+                MemberInfo.memberInfo.add(newMemberData)
+            }
         }
     }
 }

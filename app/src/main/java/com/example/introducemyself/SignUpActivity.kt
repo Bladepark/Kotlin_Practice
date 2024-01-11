@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -21,16 +20,20 @@ class SignUpActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_ENTRY_TYPE = "extra_entry_type"
         private const val EXTRA_MEMBER_DATA = "extra_member_data"
-        fun newIntent(context: Context, entryType: SignUpEntryType, memberData: MemberData): Intent = Intent(
+        fun newIntent(
+            context: Context,
+            entryType: SignUpEntryType,
+            memberData: MemberData
+        ): Intent = Intent(
             context,
             SignUpActivity::class.java
         ).apply {
             putExtra(EXTRA_ENTRY_TYPE, entryType.ordinal)
-            putExtra(EXTRA_MEMBER_DATA , memberData)
+            putExtra(EXTRA_MEMBER_DATA, memberData)
         }
     }
 
-    private val entryType : SignUpEntryType by lazy {
+    private val entryType: SignUpEntryType by lazy {
         SignUpEntryType.getEntryType(
             intent?.getIntExtra(
                 EXTRA_ENTRY_TYPE,
@@ -86,35 +89,35 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() = with(viewModel) {
-        viewModel.nameErrMsg.observe(this@SignUpActivity, Observer {
+        nameErrMsg.observe(this@SignUpActivity, Observer {
             nameEditText.error = it
         })
 
-        viewModel.ageErrMsg.observe(this@SignUpActivity, Observer {
+        ageErrMsg.observe(this@SignUpActivity, Observer {
             ageEditText.error = it
         })
 
-        viewModel.mbtiErrMsg.observe(this@SignUpActivity, Observer {
+        mbtiErrMsg.observe(this@SignUpActivity, Observer {
             mbtiEditText.error = it
         })
 
-        viewModel.idErrMsg.observe(this@SignUpActivity, Observer {
+        idErrMsg.observe(this@SignUpActivity, Observer {
             idEditText.error = it
         })
 
-        viewModel.pwdErrMsg.observe(this@SignUpActivity, Observer {
+        pwdErrMsg.observe(this@SignUpActivity, Observer {
             pwdEditText.error = it
         })
 
-        viewModel.pwdCheckErrMsg.observe(this@SignUpActivity, Observer {
+        pwdCheckErrMsg.observe(this@SignUpActivity, Observer {
             pwdCheckEditText.error = it
         })
 
-        viewModel.emailErrMsg.observe(this@SignUpActivity, Observer {
+        emailErrMsg.observe(this@SignUpActivity, Observer {
             emailEditText.error = it
         })
 
-        viewModel.isSignUpBtnEnabled.observe(this@SignUpActivity, Observer {
+        isSignUpBtnEnabled.observe(this@SignUpActivity, Observer {
             signUpBtn.isEnabled = it
         })
     }
@@ -130,11 +133,10 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setMemberData() {
-        if(entryType == SignUpEntryType.CREAT) {
+        if (entryType == SignUpEntryType.CREAT) {
             return
         }
         val emailProvider = memberData?.id?.split('@')
-        Log.d("SignUpActivity", "Email Provider: $emailProvider")
         nameEditText.setText(memberData?.name)
         ageEditText.setText(memberData?.age)
         mbtiEditText.setText(memberData?.mbti)
@@ -144,16 +146,19 @@ class SignUpActivity : AppCompatActivity() {
         signUpBtn.text = getString(R.string.sign_up_edit_profile_finish)
 
 
-        when(emailProvider?.getOrNull(1)) {
+        when (emailProvider?.getOrNull(1)) {
             "gmail.com" -> {
                 spinner.setSelection(2)
             }
+
             "naver.com" -> {
                 spinner.setSelection(3)
             }
+
             "kakao.com" -> {
                 spinner.setSelection(4)
             }
+
             else -> spinner.setSelection(1)
         }
     }
@@ -161,16 +166,19 @@ class SignUpActivity : AppCompatActivity() {
     private fun setTextChangedListener() {
         editTexts.forEach { editText ->
             editText.addTextChangedListener {
-                when(editText) {
+                when (editText) {
                     nameEditText -> viewModel.getMessageValidName(nameEditText.text.toString())
-                    ageEditText -> viewModel.(ageEditText.text.toString())
-                    mbtiEditText -> viewModel.setErrorMessage(mbtiEditText.text.toString())
-                    idEditText -> viewModel.setErrorMessage(idEditText.text.toString())
-                    pwdEditText -> viewModel.setErrorMessage(pwdEditText.text.toString())
-                    pwdCheckEditText -> viewModel.setErrorMessage(pwdCheckEditText.text.toString())
-                    emailEditText -> viewModel.setErrorMessage(emailEditText.text.toString())
+                    ageEditText -> viewModel.getMessageValidAge(ageEditText.text.toString())
+                    mbtiEditText -> viewModel.getMessageValidMbti(mbtiEditText.text.toString())
+                    idEditText -> viewModel.getMessageValidId(idEditText.text.toString())
+                    pwdEditText -> viewModel.getMessageValidPwd(pwdEditText.text.toString())
+                    pwdCheckEditText -> viewModel.getMessageValidPwdCheck(
+                        pwdEditText.text.toString(),
+                        pwdCheckEditText.text.toString()
+                    )
+                    emailEditText -> viewModel.getMessageValidEmail(emailEditText.text.toString())
                 }
-                setSignUpButtonEnabled()
+                viewModel.setSignUpButtonEnabled(spinner.selectedItemPosition)
             }
         }
     }
@@ -183,43 +191,41 @@ class SignUpActivity : AppCompatActivity() {
                 else -> idEditText.text.toString()
             }
             val inputPwd = pwdEditText.text.toString()
-            if (!inputId.matches(Regex("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}\$"))) {
-                Toast.makeText(this, getString(R.string.sign_up_id_error_pattern), Toast.LENGTH_SHORT).show()
+            if (entryType == SignUpEntryType.UPDATE) {
+                viewModel.onSignUpButtonClick(
+                    SignUpEntryType.UPDATE,
+                    inputId,
+                    inputPwd,
+                    nameEditText.text.toString(),
+                    ageEditText.text.toString(),
+                    mbtiEditText.text.toString(),
+                    memberData!!.id
+                )
+                Toast.makeText(this, "프로필 수정 완료!", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra("memberId", inputId)
+                intent.putExtra("memberPwd", inputPwd)
+                startActivity(intent)
             } else {
-                if (entryType == SignUpEntryType.UPDATE) {
-                    val updatedMember = MemberData(
-                        id = inputId,
-                        pwd = inputPwd,
-                        name = nameEditText.text.toString(),
-                        age = ageEditText.text.toString(),
-                        mbti = mbtiEditText.text.toString()
-                    )
-                    MemberInfo.updateMember(memberData?.id, updatedMember)
-                    Toast.makeText(this, "프로필 수정 완료!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeActivity::class.java)
-                    intent.putExtra("memberId", inputId)
-                    intent.putExtra("memberPwd", inputPwd)
-                    startActivity(intent)
-                } else {
-                    val newMember = MemberData(
-                        id = inputId,
-                        pwd = inputPwd,
-                        name = nameEditText.text.toString(),
-                        age = ageEditText.text.toString(),
-                        mbti = mbtiEditText.text.toString()
-                    )
-
-                    MemberInfo.memberInfo.add(newMember)
-                    Toast.makeText(this, "가입 완료! 로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, SignInActivity::class.java)
-                    intent.putExtra("memberId", inputId)
-                    intent.putExtra("memberPwd", inputPwd)
-                    setResult(RESULT_OK, intent)
-                    finish()
-                }
+                viewModel.onSignUpButtonClick(
+                    SignUpEntryType.CREAT,
+                    inputId,
+                    inputPwd,
+                    nameEditText.text.toString(),
+                    ageEditText.text.toString(),
+                    mbtiEditText.text.toString(),
+                    null
+                )
+                Toast.makeText(this, "가입 완료! 로그인 후 이용해주세요.", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, SignInActivity::class.java)
+                intent.putExtra("memberId", inputId)
+                intent.putExtra("memberPwd", inputPwd)
+                setResult(RESULT_OK, intent)
+                finish()
             }
         }
     }
+
 
     private fun setServiceProvider() {
         spinner.adapter = ArrayAdapter(
@@ -247,37 +253,12 @@ class SignUpActivity : AppCompatActivity() {
                         emailTextInputLayout.visibility = View.VISIBLE
                     }
 
-                    else -> signUpBtn.isEnabled = true
+                    else -> Unit
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
     }
-
-    private fun setSignUpButtonEnabled() {
-        signUpBtn.isEnabled = when (spinner.selectedItemPosition) {
-            0 -> false
-            1 -> {
-                isValidName()?.isBlank() ?: true
-                        && isValidAge()?.isBlank() ?: true
-                        && isValidMbti()?.isBlank() ?: true
-                        && isValidId()?.isBlank() ?: true
-                        && isValidPwd()?.isBlank() ?: true
-                        && isValidPwdCheck()?.isBlank() ?: true
-                        && isValidEmail()?.isBlank() ?: true
-            }
-
-            2, 3, 4 -> {
-                isValidName()?.isBlank() ?: true
-                        && isValidAge()?.isBlank() ?: true
-                        && isValidMbti()?.isBlank() ?: true
-                        && isValidId()?.isBlank() ?: true
-                        && isValidPwd()?.isBlank() ?: true
-                        && isValidPwdCheck()?.isBlank() ?: true
-            }
-            else -> false
-        }
-    }
-
 }
+
