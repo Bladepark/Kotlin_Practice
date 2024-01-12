@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             builder = NotificationCompat.Builder(this)
         }
 
+        
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.heart)
         val intent = Intent(this, SecondActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
