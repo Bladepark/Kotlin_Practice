@@ -1,0 +1,4 @@
+package com.example.baeminpractice.presentation.utils
+
+const val REQUEST_KEY_PERMISSION_CHECK_READ_EXTERNAL_STORAGE =
+    "REQUEST_KEY_PERMISSION_CHECK_READ_EXTERNAL_STORAGE"
